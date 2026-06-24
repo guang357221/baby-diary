@@ -1,0 +1,2524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#f97316">
+    <title>宝宝成长日记</title>
+    <!-- 腾讯云 SDK v2 -->
+    <script src="cloudbase.full.js"></script>
+    <style>
+        /* ========== 主题变量 ========== */
+        :root {
+            --primary: #f97316;
+            --primary-light: #fb923c;
+            --secondary: #f472b6;
+            --accent: #fbbf24;
+            --bg-gradient: linear-gradient(135deg, #f97316 0%, #f472b6 100%);
+            --card-shadow: 0 8px 32px rgba(249, 115, 22, 0.15);
+            --page-bg: linear-gradient(180deg, #fff7ed 0%, #fef3c7 100%);
+            --input-bg: #fffaf0;
+            --input-border: #fed7aa;
+            --stat-bg: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            --form-focus-shadow: rgba(249, 115, 22, 0.1);
+            --btn-shadow: rgba(249, 115, 22, 0.4);
+            --setup-bg: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            --setup-icon-bg: rgba(180, 83, 9, 0.15);
+            --setup-title-color: #92400e;
+            --setup-desc-color: #a16207;
+            --setup-arrow-color: #b45309;
+            --record-border: #f97316;
+            --lab-date: #1e293b;
+            --lab-age: #f97316;
+            --lab-health: #10b981;
+            --lab-diet: #8b5cf6;
+            --lab-poop: #f59e0b;
+            --lab-note: #ef4444;
+            --export-info-bg: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            --export-title-color: #1e40af;
+            --export-text-color: #1e3a8a;
+            --btn-secondary-bg: #fff7ed;
+            --btn-secondary-color: #c2410c;
+            --cloud-sync: #10b981;
+        }
+
+        /* 清新蓝绿 */
+        [data-theme="fresh"] {
+            --primary: #0891b2;
+            --primary-light: #22d3ee;
+            --secondary: #059669;
+            --accent: #10b981;
+            --bg-gradient: linear-gradient(135deg, #0891b2 0%, #059669 100%);
+            --card-shadow: 0 8px 32px rgba(8, 145, 178, 0.12);
+            --page-bg: linear-gradient(180deg, #ecfeff 0%, #d1fae5 100%);
+            --setup-bg: linear-gradient(135deg, #ccfbf1 0%, #a7f3d0 100%);
+            --record-border: #0891b2;
+            --lab-age: #0891b2;
+        }
+
+        /* 优雅紫粉 */
+        [data-theme="elegant"] {
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --secondary: #ec4899;
+            --accent: #f472b6;
+            --bg-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            --card-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+            --page-bg: linear-gradient(180deg, #faf5ff 0%, #fce7f3 100%);
+            --setup-bg: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            --record-border: #8b5cf6;
+            --lab-age: #8b5cf6;
+        }
+
+        /* 4. 经典蓝紫 */
+        [data-theme="classic"] {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --secondary: #7c3aed;
+            --accent: #8b5cf6;
+            --bg-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --card-shadow: 0 8px 32px rgba(79, 70, 229, 0.12);
+            --page-bg: linear-gradient(180deg, #eef2ff 0%, #ede9fe 100%);
+            --setup-bg: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            --record-border: #4f46e5;
+            --lab-age: #4f46e5;
+        }
+
+        /* 5. 莫兰迪灰 */
+        [data-theme="morandi"] {
+            --primary: #78716c;
+            --primary-light: #a8a29e;
+            --secondary: #a78bfa;
+            --accent: #c4b5fd;
+            --bg-gradient: linear-gradient(135deg, #78716c 0%, #a78bfa 100%);
+            --card-shadow: 0 8px 32px rgba(120, 113, 108, 0.1);
+            --page-bg: linear-gradient(180deg, #fafaf9 0%, #f5f3ff 100%);
+            --setup-bg: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
+            --record-border: #78716c;
+            --lab-age: #78716c;
+        }
+
+        /* 6. 奶油薄荷 */
+        [data-theme="cream-mint"] {
+            --primary: #14b8a6;
+            --primary-light: #5eead4;
+            --secondary: #fbbf24;
+            --accent: #fde68a;
+            --bg-gradient: linear-gradient(135deg, #14b8a6 0%, #fbbf24 100%);
+            --card-shadow: 0 8px 32px rgba(20, 184, 166, 0.1);
+            --page-bg: linear-gradient(180deg, #f0fdfa 0%, #fefce8 100%);
+            --setup-bg: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%);
+            --record-border: #14b8a6;
+            --lab-age: #14b8a6;
+        }
+
+        /* 7. 玫瑰豆沙 */
+        [data-theme="rose-bean"] {
+            --primary: #be185d;
+            --primary-light: #f472b6;
+            --secondary: #78716c;
+            --accent: #d6d3d1;
+            --bg-gradient: linear-gradient(135deg, #be185d 0%, #78716c 100%);
+            --card-shadow: 0 8px 32px rgba(190, 24, 93, 0.1);
+            --page-bg: linear-gradient(180deg, #fdf2f8 0%, #fafaf9 100%);
+            --setup-bg: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            --record-border: #be185d;
+            --lab-age: #be185d;
+        }
+
+        /* 8. 深海珊瑚 */
+        [data-theme="ocean-coral"] {
+            --primary: #0ea5e9;
+            --primary-light: #38bdf8;
+            --secondary: #fb7185;
+            --accent: #fda4af;
+            --bg-gradient: linear-gradient(135deg, #0ea5e9 0%, #fb7185 100%);
+            --card-shadow: 0 8px 32px rgba(14, 165, 233, 0.12);
+            --page-bg: linear-gradient(180deg, #f0f9ff 0%, #fff1f2 100%);
+            --setup-bg: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            --record-border: #0ea5e9;
+            --lab-age: #0ea5e9;
+        }
+
+        /* 9. 森林晨雾 */
+        [data-theme="forest-mist"] {
+            --primary: #65a30d;
+            --primary-light: #84cc16;
+            --secondary: #475569;
+            --accent: #94a3b8;
+            --bg-gradient: linear-gradient(135deg, #65a30d 0%, #475569 100%);
+            --card-shadow: 0 8px 32px rgba(101, 163, 13, 0.1);
+            --page-bg: linear-gradient(180deg, #f7fee7 0%, #f1f5f9 100%);
+            --setup-bg: linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%);
+            --record-border: #65a30d;
+            --lab-age: #65a30d;
+        }
+
+        /* 10. 焦糖拿铁 */
+        [data-theme="caramel-latte"] {
+            --primary: #92400e;
+            --primary-light: #b45309;
+            --secondary: #78716c;
+            --accent: #a8a29e;
+            --bg-gradient: linear-gradient(135deg, #92400e 0%, #78716c 100%);
+            --card-shadow: 0 8px 32px rgba(146, 64, 14, 0.1);
+            --page-bg: linear-gradient(180deg, #fffbeb 0%, #fafaf9 100%);
+            --setup-bg: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            --record-border: #92400e;
+            --lab-age: #92400e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif; }
+        body { background: var(--page-bg); min-height: 100vh; min-height: 100dvh; }
+        .page { display: none; }
+        .active { display: block; }
+
+        /* 首页 */
+        .home-top { background: var(--bg-gradient); padding: calc(15px + env(safe-area-inset-top)) 20px 35px; position: relative; }
+        .home-top::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .home-top-content { position: relative; z-index: 1; }
+        .home-title { font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .home-subtitle { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 300; }
+        .home-body { padding: 0 15px; margin-top: -15px; position: relative; z-index: 2; }
+
+        /* 云同步状态 */
+        .sync-status { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255,255,255,0.2); border-radius: 20px; font-size: 12px; color: white; }
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+        .sync-dot.offline { background: #f59e0b; }
+        .sync-dot.error { background: #ef4444; }
+
+        /* 卡片 */
+        .baby-card { background: white; border-radius: 20px; padding: 20px; box-shadow: var(--card-shadow); margin-bottom: 16px; }
+        .baby-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .baby-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--bg-gradient); display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; flex-shrink: 0; }
+        .baby-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .baby-info-main { flex: 1; min-width: 0; }
+        .baby-name-display { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+        .baby-age-display { font-size: 13px; color: #64748b; }
+        .baby-age-display .age-val { color: var(--primary); font-weight: 600; }
+        .baby-quick-stats { display: flex; gap: 10px; }
+        .baby-quick-stat { flex: 1; text-align: center; padding: 12px 6px; background: var(--stat-bg); border-radius: 12px; }
+        .bqs-icon { font-size: 18px; margin-bottom: 4px; }
+        .bqs-num { font-size: 18px; font-weight: 700; color: #1e293b; }
+        .bqs-label { font-size: 11px; color: #94a3b8; }
+
+        .avatar-upload-area { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+        .avatar-label { width: 60px; height: 60px; border-radius: 50%; background: var(--bg-gradient); display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; overflow: hidden; position: relative; }
+        .avatar-label img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); color: white; font-size: 10px; text-align: center; padding: 2px 0; }
+        .avatar-upload-hint { font-size: 13px; color: #94a3b8; }
+
+        .setup-hint-card { background: var(--setup-bg); border-radius: 16px; padding: 16px; margin-bottom: 16px; cursor: pointer; }
+        .setup-hint-card:active { transform: scale(0.99); }
+        .setup-hint-inner { display: flex; align-items: center; gap: 12px; }
+        .setup-hint-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--setup-icon-bg); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .setup-hint-text { flex: 1; }
+        .setup-hint-title { font-size: 14px; font-weight: 600; color: var(--setup-title-color); margin-bottom: 2px; }
+        .setup-hint-desc { font-size: 12px; color: var(--setup-desc-color); }
+        .setup-hint-arrow { color: var(--setup-arrow-color); font-size: 18px; }
+
+        .section-title { font-size: 15px; font-weight: 600; color: #374151; margin: 0 15px 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ''; width: 3px; height: 16px; background: var(--bg-gradient); border-radius: 2px; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0 15px 20px; }
+        .menu-item { background: white; border-radius: 16px; padding: 18px 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); cursor: pointer; }
+        .menu-item:active { transform: scale(0.97); }
+        .menu-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px; }
+        .menu-item:nth-child(1) .menu-icon { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
+        .menu-item:nth-child(2) .menu-icon { background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%); }
+        .menu-item:nth-child(3) .menu-icon { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .menu-item:nth-child(4) .menu-icon { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); }
+        .menu-item:nth-child(5) .menu-icon { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); }
+        .menu-item:nth-child(6) .menu-icon { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
+        .menu-text { font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 2px; }
+        .menu-desc { font-size: 11px; color: #94a3b8; }
+        .reset-area { text-align: center; padding: 24px 15px 40px; }
+        .reset-btn { background: none; border: none; color: #94a3b8; font-size: 12px; cursor: pointer; padding: 8px 16px; border-radius: 20px; }
+
+        /* 通用内页 */
+        .page-header { background: var(--bg-gradient); padding: calc(15px + env(safe-area-inset-top)) 20px 28px; position: sticky; top: 0; z-index: 100; }
+        .page-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .page-title { color: white; font-size: 18px; font-weight: 600; text-align: center; position: relative; z-index: 1; }
+        .back-btn { position: absolute; left: 15px; top: calc(15px + env(safe-area-inset-top)); background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; z-index: 2; }
+        .page-content { padding: 20px 15px; }
+        .form-card { background: white; border-radius: 20px; padding: 22px; box-shadow: var(--card-shadow); margin-bottom: 16px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+        .form-control { width: 100%; padding: 13px 15px; border: 2px solid var(--input-border); border-radius: 12px; font-size: 15px; background: var(--input-bg); color: #1e293b; }
+        .form-control:focus { outline: none; border-color: var(--primary); background: white; }
+        .age-display { background: var(--bg-gradient); color: white; padding: 14px 18px; border-radius: 14px; text-align: center; font-size: 15px; font-weight: 600; margin-bottom: 18px; }
+        .btn-primary { background: var(--bg-gradient); color: white; border: none; padding: 15px; border-radius: 14px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; box-shadow: 0 4px 15px var(--btn-shadow); }
+        .btn-primary:active { transform: scale(0.99); }
+        .btn-secondary { background: var(--btn-secondary-bg); color: var(--btn-secondary-color); border: none; padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 12px; }
+        .btn-sm { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; border: none; cursor: pointer; }
+        .btn-sm.btn-primary { background: var(--bg-gradient); color: white; width: auto; }
+        .btn-sm.btn-danger { background: #fef2f2; color: #dc2626; width: auto; }
+
+        /* 主题选择 */
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .theme-option { background: white; border-radius: 14px; padding: 14px 10px; text-align: center; cursor: pointer; border: 2px solid transparent; }
+        .theme-option.selected { border-color: var(--primary); }
+        .theme-preview { width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 8px; }
+        .theme-option[data-theme="warm"] .theme-preview { background: linear-gradient(135deg, #f97316 0%, #f472b6 100%); }
+        .theme-option[data-theme="fresh"] .theme-preview { background: linear-gradient(135deg, #0891b2 0%, #059669 100%); }
+        .theme-option[data-theme="elegant"] .theme-preview { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
+        .theme-option[data-theme="classic"] .theme-preview { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .theme-option[data-theme="morandi"] .theme-preview { background: linear-gradient(135deg, #78716c 0%, #a78bfa 100%); }
+        .theme-option[data-theme="cream-mint"] .theme-preview { background: linear-gradient(135deg, #14b8a6 0%, #fbbf24 100%); }
+        .theme-option[data-theme="rose-bean"] .theme-preview { background: linear-gradient(135deg, #be185d 0%, #78716c 100%); }
+        .theme-option[data-theme="ocean-coral"] .theme-preview { background: linear-gradient(135deg, #0ea5e9 0%, #fb7185 100%); }
+        .theme-option[data-theme="forest-mist"] .theme-preview { background: linear-gradient(135deg, #65a30d 0%, #475569 100%); }
+        .theme-option[data-theme="caramel-latte"] .theme-preview { background: linear-gradient(135deg, #92400e 0%, #78716c 100%); }
+        .theme-name { font-size: 13px; font-weight: 600; color: #374151; }
+        .theme-desc { font-size: 11px; color: #94a3b8; }
+
+        /* 裁剪弹窗 */
+        .crop-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .crop-modal.active { display: flex; }
+        .crop-container { background: white; border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; text-align: center; }
+        .crop-title { font-size: 18px; font-weight: 600; color: #1e293b; margin-bottom: 16px; }
+        .crop-canvas-container { width: 280px; height: 280px; margin: 0 auto 16px; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary); position: relative; background: #1e293b; touch-action: none; cursor: grab; }
+        .crop-canvas { position: absolute; top: 0; left: 0; }
+        .crop-mask { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5); pointer-events: none; }
+        .crop-zoom-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .zoom-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--bg-gradient); color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .zoom-btn.reset-btn { background: #64748b; }
+        .zoom-slider-container { flex: 1; max-width: 150px; }
+        .zoom-slider { width: 100%; height: 6px; border-radius: 3px; background: #e2e8f0; outline: none; -webkit-appearance: none; }
+        .zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); cursor: pointer; }
+        .crop-hint { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+        .crop-buttons { display: flex; gap: 12px; }
+        .crop-btn { flex: 1; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+        .crop-btn-cancel { background: #f1f5f9; color: #64748b; }
+        .crop-btn-confirm { background: var(--bg-gradient); color: white; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.9); color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.3s; }
+
+        /* 加载动画 */
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-overlay.hidden { display: none; }
+        .loading-spinner { width: 50px; height: 50px; border: 4px solid var(--input-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loading-text { margin-top: 16px; font-size: 14px; color: #64748b; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 搜索 */
+        .search-box { display: flex; gap: 10px; margin-bottom: 14px; }
+        .search-input { flex: 1; padding: 12px 15px; border: 2px solid var(--input-border); border-radius: 12px; font-size: 14px; background: white; }
+        .search-btn { background: var(--bg-gradient); color: white; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .record-list { display: flex; flex-direction: column; gap: 10px; }
+        .record-item { background: white; border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid var(--record-border); cursor: pointer; }
+        .record-item:active { transform: scale(0.99); }
+        .rec-row { display: flex; font-size: 13px; line-height: 1.6; margin-bottom: 5px; gap: 20px; flex-wrap: wrap; }
+        .rec-row:last-child { margin-bottom: 0; }
+        .rec-row1 { justify-content: space-between; align-items: center; }
+        .lab-date { color: var(--lab-date); font-weight: bold; }
+        .lab-age { color: var(--lab-age); font-weight: bold; margin-left: 6px; }
+        .lab-health { color: var(--lab-health); font-weight: bold; }
+        .lab-diet { color: var(--lab-diet); font-weight: bold; }
+        .lab-poop { color: var(--lab-poop); font-weight: bold; }
+        .lab-note { color: var(--lab-note); font-weight: bold; margin-left: 8px; }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 70px; opacity: 0.25; margin-bottom: 16px; }
+        .empty-text { color: #94a3b8; font-size: 14px; }
+
+        /* 导入导出 */
+        .info-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; }
+        .info-card-tip { background: var(--setup-bg); }
+        .info-card-export { background: var(--export-info-bg); }
+        .info-card-title { font-weight: 600; margin-bottom: 6px; }
+        .info-card-tip .info-card-title { color: var(--setup-title-color); }
+        .info-card-export .info-card-title { color: var(--export-title-color); }
+        .info-card-text { font-size: 13px; line-height: 1.5; }
+        .info-card-tip .info-card-text { color: var(--setup-desc-color); }
+        .info-card-export .info-card-text { color: var(--export-text-color); }
+        .stats-row { display: flex; gap: 10px; margin-bottom: 16px; }
+        .stat-mini { flex: 1; background: white; border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .stat-mini-val { font-size: 24px; font-weight: 700; color: var(--primary); }
+        .stat-mini-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+        .import-btn { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); color: white; border: none; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; }
+        .preview-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .preview-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+        .preview-row .label { color: #64748b; }
+        .preview-row .val { font-weight: 600; color: #1e293b; }
+        .preview-row .val.highlight { color: var(--primary); }
+        .preview-sample { margin-top: 10px; padding: 10px; background: var(--input-bg); border-radius: 8px; font-size: 12px; color: #94a3b8; }
+        .result-msg { padding: 14px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 14px; }
+        .result-success { background: #d1fae5; color: #065f46; }
+        .result-error { background: #fee2e2; color: #991b1b; }
+
+        /* 报表 */
+        .report-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .report-stat-card { background: white; border-radius: 16px; padding: 18px 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .report-stat-val { font-size: 26px; font-weight: 700; color: var(--primary); }
+        .report-stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .report-period { text-align: center; padding: 12px; background: var(--input-bg); border-radius: 10px; margin-bottom: 16px; }
+        .report-period .period-label { font-size: 12px; color: #94a3b8; }
+        .report-period .period-value { font-size: 14px; font-weight: 600; color: #374151; margin-top: 2px; }
+        .highlight { background: #ffeb3b; color: #d32f2f; font-weight: 700; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* 更新日志弹窗 */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 20px; max-width: 400px; width: 100%; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 16px 20px; background: var(--bg-gradient); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header-title { font-size: 16px; font-weight: 600; color: white; }
+        .modal-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid #e5e7eb; }
+
+        /* 云同步按钮 */
+        .cloud-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    </style>
+</head>
+<body>
+
+<!-- 加载动画 -->
+<div id="loading_overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loading_text">正在连接云端...</div>
+</div>
+
+<!-- 首页 -->
+<div id="page-main" class="page active">
+    <div class="home-top">
+        <div class="home-top-content">
+            <div class="home-title">
+                <span>👶 宝宝成长日记</span>
+                <div class="sync-status" id="sync_status">
+                    <span class="sync-dot"></span>
+                    <span class="sync-text">已连接</span>
+                </div>
+            </div>
+            <div class="home-subtitle">记录每一个珍贵的成长瞬间</div>
+        </div>
+    </div>
+    <div class="home-body">
+        <div id="setup_hint_card" class="setup-hint-card" onclick="go('birth')" style="display:none;">
+            <div class="setup-hint-inner">
+                <div class="setup-hint-icon">📋</div>
+                <div class="setup-hint-text">
+                    <div class="setup-hint-title">首次使用请先设置信息</div>
+                    <div class="setup-hint-desc">点击设置宝宝生日和名字</div>
+                </div>
+                <div class="setup-hint-arrow">›</div>
+            </div>
+        </div>
+
+        <div class="baby-card" id="baby_info_card" style="display:none;">
+            <div class="baby-card-top">
+                <div class="baby-avatar">👶</div>
+                <div class="baby-info-main">
+                    <div class="baby-name-display" id="home_baby_name">宝宝</div>
+                    <div class="baby-age-display">今天 <span class="age-val" id="home_today_age">—</span></div>
+                </div>
+            </div>
+            <div class="baby-quick-stats">
+                <div class="baby-quick-stat"><div class="bqs-icon">📅</div><div class="bqs-num" id="home_stat_days">0</div><div class="bqs-label">记录天数</div></div>
+                <div class="baby-quick-stat"><div class="bqs-icon">💩</div><div class="bqs-num" id="home_stat_avg_poop">0</div><div class="bqs-label">平均排便</div></div>
+                <div class="baby-quick-stat" id="home_health_stat"><div class="bqs-icon">💚</div><div class="bqs-num" id="home_stat_health" style="font-size:14px;">—</div><div class="bqs-label">健康状态</div></div>
+            </div>
+        </div>
+
+        <div id="edit_baby_info_card" class="baby-card" style="display:none; cursor:pointer;" onclick="go('birth')">
+            <div class="baby-card-top">
+                <div class="baby-avatar">👶</div>
+                <div class="baby-info-main">
+                    <div class="baby-name-display" id="home_baby_name2">宝宝</div>
+                    <div class="baby-age-display">今天 <span class="age-val" id="home_today_age2">—</span></div>
+                </div>
+                <div style="color:#94a3b8;font-size:18px;">✏️</div>
+            </div>
+            <div class="baby-quick-stats">
+                <div class="baby-quick-stat"><div class="bqs-icon">📅</div><div class="bqs-num" id="home_stat_days2">0</div><div class="bqs-label">记录天数</div></div>
+                <div class="baby-quick-stat"><div class="bqs-icon">💩</div><div class="bqs-num" id="home_stat_avg_poop2">0</div><div class="bqs-label">平均排便</div></div>
+                <div class="baby-quick-stat" id="home_health_stat2"><div class="bqs-icon">💚</div><div class="bqs-num" id="home_stat_health2" style="font-size:14px;">—</div><div class="bqs-label">健康状态</div></div>
+            </div>
+        </div>
+
+        <div class="section-title">功能菜单</div>
+        <div class="menu-grid">
+            <div class="menu-item" onclick="goAddWithPermissionCheck()"><div class="menu-icon">➕</div><div class="menu-text">添加记录</div><div class="menu-desc">记录今日情况</div></div>
+            <div class="menu-item" onclick="go('list')"><div class="menu-icon">📋</div><div class="menu-text">查看记录</div><div class="menu-desc">浏览历史数据</div></div>
+            <div class="menu-item" onclick="go('import')"><div class="menu-icon">📥</div><div class="menu-text">导入数据</div><div class="menu-desc">从备份恢复</div></div>
+            <div class="menu-item" onclick="go('export')"><div class="menu-icon">📤</div><div class="menu-text">导出数据</div><div class="menu-desc">备份到本地</div></div>
+            <div class="menu-item" onclick="go('report')"><div class="menu-icon">📊</div><div class="menu-text">数据报表</div><div class="menu-desc">统计分析</div></div>
+            <div class="menu-item" onclick="go('birth')"><div class="menu-icon">⚙️</div><div class="menu-text">设置信息</div><div class="menu-desc">修改宝宝信息</div></div>
+        </div>
+        <div class="reset-area">
+            <button class="reset-btn" id="resetClick">⚠️ 连续点击5次重置所有数据</button>
+        </div>
+    </div>
+</div>
+
+<!-- 设置宝宝信息 -->
+<div id="page-birth" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack('main')">←</button>
+        <div class="page-title">设置宝宝信息</div>
+    </div>
+    <div class="page-content">
+        <div class="form-card">
+            <div class="avatar-upload-area">
+                <div class="avatar-label" id="avatar_preview_label" onclick="selectAvatarFile()" style="cursor:pointer;">
+                    👶
+                    <div class="avatar-overlay">上传</div>
+                </div>
+                <input type="file" id="avatar_file_input" accept="image/*" style="display:none;" onchange="handleAvatarSelect(event)">
+                <div class="avatar-upload-hint">点击头像上传照片<br>最大50MB</div>
+            </div>
+            <div class="form-group"><label>👶 宝宝名字</label><input type="text" id="baby_name_input" class="form-control" placeholder="请输入宝宝的名字"></div>
+            <div class="form-group"><label>📅 出生日期</label><input type="date" id="birth_date" class="form-control"></div>
+            <button class="btn-primary" onclick="saveBirthday()">💾 保存信息</button>
+        </div>
+        <div class="form-card">
+            <button class="btn-secondary" onclick="go('theme')">🎨 主题设置</button>
+            <button class="btn-secondary" onclick="showUpdateLog()">📜 更新日志</button>
+            <button class="btn-secondary cloud-btn" onclick="showFamilyModal()">👨‍👩‍👧 家庭共享设置</button>
+        </div>
+    </div>
+</div>
+
+<!-- 主题设置页面 -->
+<div id="page-theme" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="go('birth')">←</button>
+        <div class="page-title">🎨 主题设置</div>
+    </div>
+    <div class="page-content">
+        <div class="form-card">
+            <div style="font-size:13px;color:#94a3b8;margin-bottom:12px;">选择你喜欢的色调</div>
+            <div class="theme-grid">
+                <div class="theme-option" data-theme="warm" onclick="selectTheme('warm')"><div class="theme-preview"></div><div class="theme-name">暖色调</div><div class="theme-desc">温馨活力</div></div>
+                <div class="theme-option" data-theme="fresh" onclick="selectTheme('fresh')"><div class="theme-preview"></div><div class="theme-name">清新蓝绿</div><div class="theme-desc">清爽自然</div></div>
+                <div class="theme-option" data-theme="elegant" onclick="selectTheme('elegant')"><div class="theme-preview"></div><div class="theme-name">优雅紫粉</div><div class="theme-desc">浪漫甜美</div></div>
+                <div class="theme-option" data-theme="classic" onclick="selectTheme('classic')"><div class="theme-preview"></div><div class="theme-name">经典蓝紫</div><div class="theme-desc">沉稳专业</div></div>
+                <div class="theme-option" data-theme="morandi" onclick="selectTheme('morandi')"><div class="theme-preview"></div><div class="theme-name">莫兰迪灰</div><div class="theme-desc">低调高级</div></div>
+                <div class="theme-option" data-theme="cream-mint" onclick="selectTheme('cream-mint')"><div class="theme-preview"></div><div class="theme-name">奶油薄荷</div><div class="theme-desc">柔和拼色</div></div>
+                <div class="theme-option" data-theme="rose-bean" onclick="selectTheme('rose-bean')"><div class="theme-preview"></div><div class="theme-name">玫瑰豆沙</div><div class="theme-desc">温柔拼色</div></div>
+                <div class="theme-option" data-theme="ocean-coral" onclick="selectTheme('ocean-coral')"><div class="theme-preview"></div><div class="theme-name">深海珊瑚</div><div class="theme-desc">冷暖拼色</div></div>
+                <div class="theme-option" data-theme="forest-mist" onclick="selectTheme('forest-mist')"><div class="theme-preview"></div><div class="theme-name">森林晨雾</div><div class="theme-desc">自然拼色</div></div>
+                <div class="theme-option" data-theme="caramel-latte" onclick="selectTheme('caramel-latte')"><div class="theme-preview"></div><div class="theme-name">焦糖拿铁</div><div class="theme-desc">暖色拼色</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加记录 -->
+<div id="page-add" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBackFromEdit()">←</button>
+        <div class="page-title" id="edit-title">添加记录</div>
+    </div>
+    <div class="page-content">
+        <input type="hidden" id="edit-id">
+        <div class="age-display">👶 宝宝年龄：<span id="baby_age">请先设置生日</span></div>
+        <div class="form-card">
+            <div class="form-group"><label>📅 记录日期</label><input type="date" id="record_date" class="form-control"></div>
+            <div class="form-group"><label>🏥 健康状态</label>
+                <select id="health_status" class="form-control">
+                    <option value="健康">😊 健康</option><option value="生病">😷 生病</option>
+                    <option value="外伤">🤕 外伤</option><option value="疫苗">💉 疫苗</option>
+                    <option value="其他">📝 其他</option>
+                </select>
+            </div>
+            <div class="form-group" id="health_extra_group" style="display:none"><label>补充说明</label><input type="text" id="health_extra" class="form-control"></div>
+            <div class="form-group"><label>💩 排便次数</label><input type="number" id="poop_count" min="0" value="0" class="form-control"></div>
+            <div class="form-group" id="poop_status_group" style="display:none"><label>便便状态</label>
+                <select id="poop_status" class="form-control">
+                    <option value="💧 稀便">💧 稀便</option><option value="🍮 软便">🍮 软便</option>
+                    <option value="✅ 正常">✅ 正常</option><option value="🌰 干结">🌰 干结</option>
+                    <option value="⚪ 颗粒">⚪ 颗粒</option><option value="⚠️ 异常">⚠️ 异常</option>
+                </select>
+            </div>
+            <div class="form-group"><label>🍼 饮食记录</label><textarea id="diet" rows="3" class="form-control" placeholder="今天吃了什么？"></textarea></div>
+            <div class="form-group"><label>📝 备注</label><textarea id="note" rows="2" class="form-control" placeholder="其他想记录的内容..."></textarea></div>
+            <button class="btn-primary" onclick="saveRecord()">💾 保存记录</button>
+        </div>
+    </div>
+</div>
+
+<!-- 查看记录 -->
+<div id="page-list" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack('main')">←</button>
+        <div class="page-title">查看记录</div>
+    </div>
+    <div class="page-content">
+        <div class="search-box">
+            <input type="text" class="search-input" id="search_key" placeholder="🔍 搜索关键词...">
+            <button class="search-btn" onclick="searchRecords()">搜索</button>
+        </div>
+        <div class="record-list" id="records_list"></div>
+    </div>
+</div>
+
+<!-- 导入数据 -->
+<div id="page-import" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack('main')">←</button>
+        <div class="page-title">导入数据</div>
+    </div>
+    <div class="page-content">
+        <div class="info-card info-card-tip">
+            <div class="info-card-title">💡 导入说明</div>
+            <div class="info-card-text">支持 CSV 文件导入，导入后会自动同步到云端</div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-mini"><div class="stat-mini-val" id="import_current">0</div><div class="stat-mini-label">当前记录</div></div>
+            <div class="stat-mini"><div class="stat-mini-val" id="import_mode_disp">合并</div><div class="stat-mini-label">导入模式</div></div>
+        </div>
+        <!-- 导入模式选择 -->
+        <div class="form-card">
+            <div class="form-group">
+                <label>选择导入模式</label>
+                <select id="import_mode" class="form-control" onchange="updateImportMode()">
+                    <option value="merge">📝 合并导入 — 保留现有数据，追加新记录</option>
+                    <option value="replace">⚠️ 覆盖导入 — 清空现有数据，导入全部记录</option>
+                </select>
+            </div>
+        </div>
+        <button class="import-btn" id="select_file_btn" onclick="selectCSVFile()">📂 选择 CSV 文件</button>
+        <input type="file" id="csv_file_input" accept=".csv,.txt" style="display:none;" onchange="handleCSVFile(event)">
+        <!-- 文件预览区域 -->
+        <div id="file_preview" style="display:none;">
+            <div class="preview-card" id="preview_info"></div>
+            <button class="btn-primary" id="do_import_btn" onclick="doImport()" style="display:none;">✅ 确认导入</button>
+        </div>
+        <div id="import_result"></div>
+    </div>
+</div>
+
+<!-- 导出数据 -->
+<div id="page-export" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack('main')">←</button>
+        <div class="page-title">导出数据</div>
+    </div>
+    <div class="page-content">
+        <div class="info-card info-card-export"><div class="info-card-title">📤 导出说明</div><div class="info-card-text">导出 CSV 文件可用于备份，数据已自动同步到云端</div></div>
+        <div class="stats-row">
+            <div class="stat-mini"><div class="stat-mini-val" id="export_current">0</div><div class="stat-mini-label">当前记录</div></div>
+        </div>
+        <div class="form-card">
+            <button class="btn-primary" onclick="exportCSV()">📄 导出 CSV</button>
+        </div>
+    </div>
+</div>
+
+<!-- 数据报表 -->
+<div id="page-report" class="page">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack('main')">←</button>
+        <div class="page-title">数据报表</div>
+    </div>
+    <div class="page-content">
+        <div class="form-card">
+            <div class="form-group"><label>📊 统计周期</label>
+                <select id="report_type" class="form-control">
+                    <option value="week">本周</option><option value="month">本月</option>
+                    <option value="quarter">本季度</option><option value="year">本年</option>
+                    <option value="all">全部记录</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="generateReport()">📈 生成报表</button>
+        </div>
+        <div id="report_result"></div>
+    </div>
+</div>
+
+<!-- 头像裁剪弹窗 -->
+<div id="crop_modal" class="crop-modal">
+    <div class="crop-container">
+        <div class="crop-title">✂️ 裁剪头像</div>
+        <div class="crop-canvas-container" id="crop_container">
+            <canvas id="crop_canvas" class="crop-canvas"></canvas>
+            <div class="crop-mask"></div>
+        </div>
+        <div class="crop-zoom-controls">
+            <button class="zoom-btn" onclick="zoomOut()">➖</button>
+            <div class="zoom-slider-container"><input type="range" id="zoom_slider" class="zoom-slider" min="0.5" max="3" step="0.1" value="1" oninput="onZoomSliderChange(this.value)"></div>
+            <button class="zoom-btn" onclick="zoomIn()">➕</button>
+            <button class="zoom-btn reset-btn" onclick="resetZoom()">⟲</button>
+        </div>
+        <div class="crop-hint">双指缩放/拖动调整位置</div>
+        <div class="crop-buttons">
+            <button class="crop-btn crop-btn-cancel" onclick="closeCropModal()">取消</button>
+            <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">确认使用</button>
+        </div>
+    </div>
+</div>
+
+<!-- 家庭设置弹窗 -->
+<span id="family_code_display" style="display:none;"></span>
+<div id="family_modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-header-title">👨‍👩‍👧 家庭共享</div>
+            <button class="modal-close" onclick="closeFamilyModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div id="family_create_section" style="display:none;">
+                <p style="font-size:14px;color:#64748b;margin-bottom:16px;">创建家庭后，将你的用户ID分享给家人，管理员可添加你为家庭成员。</p>
+                <button class="btn-primary cloud-btn" onclick="createFamily()">✨ 创建我的家庭</button>
+                <!-- 显示 UserID -->
+                <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e5e7eb;">
+                    <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">你的用户ID（分享给家人，让管理员添加你）</div>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <code id="create_user_id" style="flex:1;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;color:#475569;word-break:break-all;">--</code>
+                        <button onclick="copyMyUserId()" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:6px;font-size:11px;cursor:pointer;">复制</button>
+                    </div>
+                </div>
+                <!-- 检查是否已被添加 -->
+                <div style="margin-top:16px;text-align:center;">
+                    <button class="btn-secondary" onclick="checkAndJoinFamily()" style="padding:12px;width:100%;">🔄 检查是否已被管理员添加</button>
+                    <p style="font-size:11px;color:#94a3b8;margin-top:8px;">管理员添加你的UserID后，点击此按钮自动加入</p>
+                </div>
+            </div>
+            <div id="family_join_section" style="display:none;">
+                <p style="font-size:14px;color:#64748b;margin-bottom:16px;">将你的用户ID分享给家人，管理员添加你后即可自动加入家庭。</p>
+                <button class="btn-secondary" onclick="showFamilyCreateSection()" style="padding:12px;margin-top:12px;">← 返回</button>
+                <!-- 显示 UserID -->
+                <div style="margin-top:20px;padding-top:16px;border-top:1px dashed #e5e7eb;">
+                    <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">你的用户ID（分享给家人，让管理员添加你）</div>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <code id="join_user_id" style="flex:1;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;color:#475569;word-break:break-all;">--</code>
+                        <button onclick="copyMyUserId()" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:6px;font-size:11px;cursor:pointer;">复制</button>
+                    </div>
+                </div>
+                <!-- 检查是否已被添加 -->
+                <div style="margin-top:16px;text-align:center;">
+                    <button class="btn-secondary" onclick="checkAndJoinFamily()" style="padding:12px;width:100%;">🔄 检查是否已被管理员添加</button>
+                    <p style="font-size:11px;color:#94a3b8;margin-top:8px;">管理员添加你的UserID后，点击此按钮自动加入</p>
+                </div>
+            </div>
+            <div id="family_info_section" style="display:none;">
+                <!-- 权限状态 -->
+                <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div style="font-size:13px;color:#64748b;margin-bottom:4px;">你的权限</div>
+                            <div id="permission_role" style="font-size:16px;font-weight:600;color:#374151;">👁️ 仅查看</div>
+                        </div>
+                        <div id="permission_hint" style="font-size:12px;color:#94a3b8;text-align:right;">
+                            可查看所有记录
+                        </div>
+                    </div>
+                    <!-- 显示 UserID，方便分享给管理员 -->
+                    <div style="margin-top:12px;padding-top:12px;border-top:1px dashed #e5e7eb;">
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">你的用户ID（分享给管理员）</div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <code id="my_user_id" style="flex:1;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:12px;color:#475569;word-break:break-all;">--</code>
+                            <button onclick="copyMyUserId()" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer;">复制</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 成员管理（仅 owner 可见） -->
+                <div id="family_members_section" style="display:none;margin-bottom:16px;">
+                    <div style="font-size:14px;font-weight:600;color:#374151;margin-bottom:12px;">👥 成员管理</div>
+                    <div id="family_members_list" style="background:#f8fafc;border-radius:12px;padding:12px 16px;">
+                        <!-- 成员列表动态加载 -->
+                    </div>
+                    <!-- 手动添加成员 -->
+                    <div style="margin-top:12px;display:flex;gap:8px;">
+                        <input type="text" id="add_member_input" placeholder="输入成员UserID" style="flex:1;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;">
+                        <button class="btn-sm btn-primary" onclick="addMemberManually()">添加成员</button>
+                    </div>
+                    <div style="font-size:12px;color:#94a3b8;margin-top:8px;padding:0 4px;">
+                        💡 点击"授予编辑权"可让成员添加和修改记录
+                    </div>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <button class="btn-secondary" onclick="copyFamilyCode()">📋 复制邀请码</button>
+                <button class="btn-secondary" onclick="showFamilyJoinSection()">🔄 切换家庭</button>
+                <button class="btn-secondary" onclick="leaveFamily()" style="color:#ef4444;">🚪 退出当前家庭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 更新日志弹窗 -->
+<div id="update_log_modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-header-title">📜 更新日志</div>
+            <button class="modal-close" onclick="closeUpdateLog()">✕</button>
+        </div>
+        <div class="modal-body" id="update_log_content"></div>
+        <div class="modal-footer"><button class="btn-primary" onclick="closeUpdateLog()">关闭</button></div>
+    </div>
+</div>
+
+<script>
+// ========== 腾讯云配置 ==========
+const CLOUDBASE_CONFIG = {
+    env: 'baby-diary-d6g50cjpte4f975e1',  // 环境ID
+    accessKey: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjlkMWRjMzFlLWI0ZDAtNDQ4Yi1hNzZmLWIwY2M2M2Q4MTQ5OCJ9.eyJhdWQiOiJiYWJ5LWRpYXJ5LWQ2ZzUwY2pwdGU0Zjk3NWUxIiwiZXhwIjoyNTM0MDIzMDA3OTksImlhdCI6MTc3OTQyMTUzMCwiYXRfaGFzaCI6InVnVlpRTjFDVHR1dmxUdUx1ZVpuYmciLCJwcm9qZWN0X2lkIjoiYmFieS1kaWFyeS1kNmc1MGNqcHRlNGY5NzVlMSIsIm1ldGEiOnsicGxhdGZvcm0iOiJBcGlLZXkifSwiYWRtaW5pc3RyYXRvcl9pZCI6IjIwNTc2Njc4ODgzMzUwNzczNzciLCJ1c2VyX3R5cGUiOiIiLCJjbGllbnRfdHlwZSI6ImNsaWVudF9zZXJ2ZXIiLCJpc19zeXN0ZW1fYWRtaW4iOnRydWV9.Uo1MqxR_l40Vg9SBrk5iV-MgZMFEa5_yQffkW7S0ige4j-taJgBPTgRSSefUa_pdhlO2CySBgdQnbufjf0XcFRFdzSSKt__imnqgHXuIj6DP6sc_Znn1aPaSQvDBRBHXwd_2bPzjEwA7SUkJkl6e23wOmszW8ZYIzrMp9Wk_cIvCCZI1UOM-m1R2E2U4B_Y_hd70VT6UrtHAYsPhVdiw9LH0P2I9DlAyqEEDJwgpHNN5zWWCmP8O12s8Scb2VJ4GDcniof9Yng108TaaG0vI2oJQAKzwDrrh2S8XwTnxy-izUz7L-A7dxbWmiIfh95P8N2JGHIicZFVBMr-yVOSVKA'
+};
+
+// 腾讯云 SDK 实例
+let app = null;
+let db = null;
+
+// 云端状态
+let cloudStatus = {
+    connected: false,
+    familyId: null,
+    userId: null,
+    role: 'viewer',  // 角色：owner(创建者), editor(可编辑), viewer(仅查看)
+    canEdit: false    // 是否可编辑
+};
+
+// 权限说明：
+// owner: 家庭创建者，拥有所有权限
+// editor: 被授权的成员，可以添加和编辑记录
+// viewer: 仅能查看，不能编辑（默认加入的家庭成员）
+
+// 本地状态
+let localData = {
+    babyName: null,
+    babyBirthday: null,
+    theme: 'warm',
+    avatar: null,
+    records: []
+};
+
+// ========== 更新日志 ==========
+const updateLogs = [
+    { version: 'V2.0', date: '2026-05-26', changes: [
+        '🆕 家庭共享全新改版：移除邀请码，改用 UserID 分享机制',
+        '🆕 管理员可在成员管理中手动添加家庭成员',
+        '🆕 新成员加入后自动检测并同步家庭数据',
+        '🆕 CSV 导入支持覆盖/合并两种模式',
+        '🆕 CSV 导入新增文件预览和确认导入功能',
+        '🆕 页面滚动时返回按钮始终固定在顶部',
+        '🆕 Android APP 滑动返回优化：子页面返回主页，主页滑动提示退出',
+        '🔧 头像上传修复：支持 Android APP 文件选择',
+        '🔧 头像保存优化：本地头像优先，不被云端覆盖',
+        '🔧 头像裁剪修复：使用 V1.7 正确逻辑',
+        '🔧 数据同步优化：按日期去重，避免重复记录',
+        '🔧 查看记录页面优化：输入框宽度自适应'
+    ]},
+    { version: 'V1.8（云同步版）', date: '2026-05-22', changes: ['支持多人在线同步查看记录', '家庭邀请码共享机制', '数据实时同步到云端', '保留本地缓存，离线可用'] },
+    { version: 'V1.7', date: '2026-05-22', changes: ['头像裁剪支持缩放和拖动', '修复头像显示问题'] },
+    { version: 'V1.6', date: '2026-05-22', changes: ['新增头像裁剪功能', '支持最大50MB图片'] }
+];
+
+// ========== 初始化 ==========
+async function init() {
+    showLoading('正在初始化...');
+    
+    // 加载本地数据
+    loadLocalData();
+    
+    // 初始化主题
+    loadTheme();
+    updateThemeUI(localData.theme);
+
+    // 初始化腾讯云
+    await initCloud();
+    
+    // 启动定时同步（每30秒自动同步一次）
+    startAutoSync();
+    
+    // 隐藏加载
+    hideLoading();
+    
+    // 更新UI
+    updateUI();
+}
+
+// ========== 定时自动同步 ==========
+let autoSyncInterval = null;
+
+function startAutoSync() {
+    // 清除已有的定时器
+    if (autoSyncInterval) {
+        clearInterval(autoSyncInterval);
+    }
+    
+    // 每30秒自动同步一次
+    autoSyncInterval = setInterval(async () => {
+        if (cloudStatus.connected && cloudStatus.familyId) {
+            console.log('自动同步中...');
+            await syncFromCloud();
+            updateUI();
+        }
+    }, 30000); // 30秒
+    
+    console.log('自动同步已启动（每30秒）');
+}
+
+function stopAutoSync() {
+    if (autoSyncInterval) {
+        clearInterval(autoSyncInterval);
+        autoSyncInterval = null;
+        console.log('自动同步已停止');
+    }
+}
+
+// ========== 腾讯云初始化 ==========
+async function initCloud() {
+    try {
+        updateLoadingText('正在连接云端...');
+        
+        // 初始化腾讯云 v2 SDK
+        app = cloudbase.init({
+            env: CLOUDBASE_CONFIG.env,
+            accessKey: CLOUDBASE_CONFIG.accessKey
+        });
+        
+        // 获取数据库实例
+        db = app.database();
+        
+        // 匿名登录
+        updateLoadingText('正在登录...');
+        const authResult = await app.auth.signInAnonymously();
+        
+        // v2 SDK 返回格式: { data: { user, session }, error }
+        let userId = null;
+        if (authResult) {
+            if (authResult.data && authResult.data.user) {
+                userId = authResult.data.user.uid || authResult.data.user.id || authResult.data.user.sub;
+            } else if (authResult.user) {
+                userId = authResult.user.uid || authResult.user.id;
+            }
+        }
+        
+        // 如果获取不到 userId，生成一个设备唯一ID并保存
+        if (!userId) {
+            userId = localStorage.getItem('cloud_user_id');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('cloud_user_id', userId);
+            }
+        } else {
+            localStorage.setItem('cloud_user_id', userId);
+        }
+        
+        cloudStatus.userId = userId;
+        cloudStatus.connected = true;
+        updateSyncStatus('connected');
+        
+        // 加载家庭数据
+        await loadFamilyData();
+        
+        // 加载云端记录
+        await syncFromCloud();
+        
+    } catch (e) {
+        console.error('云端连接失败:', e);
+        cloudStatus.connected = false;
+        updateSyncStatus('error');
+        showToast('云端连接失败，将使用本地数据');
+    }
+}
+
+// ========== 同步状态更新 ==========
+function updateSyncStatus(status) {
+    const dot = document.querySelector('.sync-dot');
+    const text = document.querySelector('.sync-text');
+    
+    dot.className = 'sync-dot';
+    
+    if (status === 'connected') {
+        text.textContent = '已同步';
+    } else if (status === 'offline') {
+        dot.classList.add('offline');
+        text.textContent = '离线';
+    } else {
+        dot.classList.add('error');
+        text.textContent = '同步失败';
+    }
+}
+
+// ========== 家庭数据 ==========
+async function loadFamilyData() {
+    try {
+        const familyId = localStorage.getItem('familyId');
+        if (familyId && cloudStatus.connected) {
+            cloudStatus.familyId = familyId;
+            document.getElementById('family_code_display').textContent = familyId;
+            
+            // 查询家庭信息，获取用户角色（强制刷新）
+            const res = await db.collection('families').where({ code: familyId }).get();
+            if (res.data && res.data.length > 0) {
+                const family = res.data[0];
+                
+                console.log('家庭数据:', JSON.stringify({
+                    createdBy: family.createdBy,
+                    myUserId: cloudStatus.userId,
+                    editors: family.editors,
+                    members: family.members
+                }));
+                
+                // 检查是否为创建者
+                if (family.createdBy === cloudStatus.userId) {
+                    cloudStatus.role = 'owner';
+                    cloudStatus.canEdit = true;
+                    console.log('当前角色: owner (管理员)');
+                } else {
+                    // 检查是否为编辑者
+                    const editors = family.editors || [];
+                    if (editors.includes(cloudStatus.userId)) {
+                        cloudStatus.role = 'editor';
+                        cloudStatus.canEdit = true;
+                        console.log('当前角色: editor (可编辑)');
+                    } else {
+                        cloudStatus.role = 'viewer';
+                        cloudStatus.canEdit = false;
+                        console.log('当前角色: viewer (仅查看)');
+                    }
+                }
+                
+                // 更新UI显示权限状态
+                updatePermissionUI();
+            } else {
+                console.log('未找到家庭记录, familyId:', familyId);
+            }
+        }
+    } catch (e) {
+        console.error('加载家庭数据失败:', e);
+    }
+}
+
+// 更新权限显示UI
+function updatePermissionUI() {
+    const roleText = document.getElementById('permission_role');
+    if (roleText) {
+        if (cloudStatus.role === 'owner') {
+            roleText.textContent = '👑 管理员';
+        } else if (cloudStatus.role === 'editor') {
+            roleText.textContent = '✏️ 可编辑';
+        } else {
+            roleText.textContent = '👁️ 仅查看';
+        }
+    }
+    
+    // 显示当前用户ID
+    const userIdEl = document.getElementById('my_user_id');
+    if (userIdEl && cloudStatus.userId) {
+        userIdEl.textContent = cloudStatus.userId;
+    }
+}
+
+// 复制自己的UserID
+function copyMyUserId() {
+    if (!cloudStatus.userId) {
+        showToast('用户ID未获取');
+        return;
+    }
+    navigator.clipboard.writeText(cloudStatus.userId).then(() => {
+        showToast('用户ID已复制，请分享给管理员');
+    }).catch(() => {
+        showToast('复制失败，请手动复制');
+    });
+}
+
+// ========== 创建家庭 ==========
+async function createFamily() {
+    try {
+        showLoading('正在创建家庭...');
+        
+        const familyId = generateFamilyCode();
+        
+        localStorage.setItem('familyId', familyId);
+        cloudStatus.familyId = familyId;
+        cloudStatus.role = 'owner';
+        cloudStatus.canEdit = true;
+        
+        // 创建家庭记录，包含创建者信息
+        await db.collection('families').add({
+            code: familyId,
+            createdAt: new Date().toISOString(),
+            createdBy: cloudStatus.userId,  // 保存创建者ID
+            editors: [],  // 编辑者列表（创建时为空）
+            members: [cloudStatus.userId]
+        });
+        
+        document.getElementById('family_code_display').textContent = familyId;
+        document.getElementById('modal_family_code').textContent = familyId;
+        
+        showFamilyInfoSection();
+        updatePermissionUI();
+        hideLoading();
+        showToast('家庭创建成功！你拥有管理员权限');
+        
+    } catch (e) {
+        hideLoading();
+        showToast('创建失败：' + e.message);
+    }
+}
+
+// ========== 加入家庭 ==========
+async function joinFamily() {
+    console.log('=== joinFamily 开始 ===');
+    const code = document.getElementById('join_family_code').value.trim().toUpperCase();
+    console.log('输入的邀请码:', code);
+    
+    if (!code || code.length !== 6) {
+        showToast('请输入正确的6位邀请码');
+        return;
+    }
+    
+    try {
+        showLoading('正在加入家庭...');
+        
+        // 查询家庭
+        console.log('查询家庭...');
+        const res = await db.collection('families').where({ code: code }).get();
+        console.log('查询结果:', res);
+        
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            
+            // 保存到本地
+            localStorage.setItem('familyId', code);
+            cloudStatus.familyId = code;
+            
+            // 加入者默认角色为 viewer（仅查看）
+            cloudStatus.role = 'viewer';
+            cloudStatus.canEdit = false;
+            
+            // 更新云端成员列表（如果不在列表中则添加）
+            let members = family.members || [];
+            console.log('加入家庭前成员列表:', members);
+            console.log('我的userId:', cloudStatus.userId);
+            if (!members.includes(cloudStatus.userId)) {
+                members.push(cloudStatus.userId);
+                console.log('准备更新成员列表:', members);
+                try {
+                    await db.collection('families').where({ code: code }).update({
+                        members: members
+                    });
+                    console.log('成员列表更新成功');
+                } catch (updateErr) {
+                    console.error('更新成员列表失败:', updateErr);
+                }
+            } else {
+                console.log('已在成员列表中');
+            }
+            
+            // 更新UI
+            document.getElementById('family_code_display').textContent = code;
+            document.getElementById('modal_family_code').textContent = code;
+            
+            // 如果本地有记录数据，先合并上传到云端
+            if (localData.records && localData.records.length > 0) {
+                try {
+                    await mergeLocalToCloud();
+                } catch (mergeErr) {
+                    console.warn('合并本地数据到云端时出错:', mergeErr);
+                }
+            }
+
+            // 从云端同步数据
+            await syncFromCloud();
+            
+            showFamilyInfoSection();
+            updatePermissionUI();
+            hideLoading();
+            showToast('加入成功！你目前仅有查看权限，如需编辑请联系管理员授权');
+            closeFamilyModal();
+        } else {
+            hideLoading();
+            showToast('邀请码不存在');
+        }
+        
+    } catch (e) {
+        hideLoading();
+        showToast('加入失败：' + e.message);
+    }
+}
+
+// ========== 生成邀请码 ==========
+function generateFamilyCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+// ========== 复制邀请码 ==========
+function copyFamilyCode() {
+    const code = cloudStatus.familyId;
+    navigator.clipboard.writeText(code).then(() => {
+        showToast('邀请码已复制！');
+    }).catch(() => {
+        showToast('复制失败，请手动复制');
+    });
+}
+
+// ========== 退出家庭 ==========
+function leaveFamily() {
+    if (!confirm('确定要退出当前家庭吗？退出后将无法查看家庭数据。')) return;
+    
+    localStorage.removeItem('familyId');
+    cloudStatus.familyId = null;
+    cloudStatus.role = 'viewer';
+    cloudStatus.canEdit = false;
+    
+    showFamilyCreateSection();
+    showToast('已退出家庭');
+}
+
+// ========== 检查是否已被管理员添加 ==========
+async function checkAndJoinFamily() {
+    if (!cloudStatus.connected) {
+        showToast('请先连接网络');
+        return;
+    }
+    
+    try {
+        showToast('正在检查...');
+        const res = await db.collection('families').where({
+            members: cloudStatus.userId
+        }).get();
+        
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            cloudStatus.familyId = family.code;
+            localStorage.setItem('familyId', family.code);
+            
+            // 加载家庭数据
+            await loadFamilyData();
+            await syncFromCloud();
+            
+            showFamilyInfoSection();
+            showToast('已成功加入家庭！');
+        } else {
+            showToast('暂未被添加，请将UserID分享给管理员');
+        }
+    } catch (e) {
+        console.error('检查失败:', e);
+        showToast('检查失败，请稍后重试');
+    }
+}
+
+// ========== 授权管理 ==========
+async function loadFamilyMembers() {
+    // 加载并显示家庭成员列表（仅 owner 可操作）
+    if (!cloudStatus.familyId || cloudStatus.role !== 'owner') return;
+    
+    try {
+        // 强制刷新，不使用缓存
+        const res = await db.collection('families').where({ code: cloudStatus.familyId }).get();
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            const members = family.members || [];
+            const editors = family.editors || [];
+            const createdBy = family.createdBy;
+            
+            console.log('成员列表:', JSON.stringify({ members, editors, createdBy }));
+            
+            // 显示成员列表
+            const membersList = document.getElementById('family_members_list');
+            if (membersList) {
+                if (members.length === 0) {
+                    membersList.innerHTML = '<div style="padding:12px;color:#94a3b8;text-align:center;">暂无其他成员加入</div>';
+                } else {
+                    membersList.innerHTML = members.map(uid => {
+                    const isOwner = uid === createdBy;
+                    const isEditor = editors.includes(uid);
+                    const isSelf = uid === cloudStatus.userId;
+                    
+                    let roleTag = '';
+                    if (isOwner) {
+                        roleTag = '<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:10px;font-size:11px;">👑 管理员</span>';
+                    } else if (isEditor) {
+                        roleTag = '<span style="background:#dbeafe;color:#2563eb;padding:2px 8px;border-radius:10px;font-size:11px;">✏️ 可编辑</span>';
+                    } else {
+                        roleTag = '<span style="background:#f3f4f6;color:#6b7280;padding:2px 8px;border-radius:10px;font-size:11px;">👁️ 仅查看</span>';
+                    }
+                    
+                    let actionBtn = '';
+                    if (!isOwner && !isSelf) {
+                        if (isEditor) {
+                            actionBtn = '<button class="btn-sm btn-danger" onclick="revokeEditor(\'' + uid + '\')">撤回编辑权</button>';
+                        } else {
+                            actionBtn = '<button class="btn-sm btn-primary" onclick="authorizeEditor(\'' + uid + '\')">授予编辑权</button>';
+                        }
+                    } else if (isSelf) {
+                        actionBtn = '<span style="color:#94a3b8;font-size:12px;">(你自己)</span>';
+                    }
+                    
+                    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f3f4f6;">' +
+                           '<div><div style="font-size:14px;font-weight:500;color:#374151;">用户 ' + uid.slice(-6) + '</div>' + roleTag + '</div>' +
+                           '<div>' + actionBtn + '</div></div>';
+                }).join('');
+                }
+            }
+        }
+    } catch (e) {
+        console.error('加载成员列表失败:', e);
+    }
+}
+
+// 授予编辑权限（owner 操作）
+async function authorizeEditor(userId) {
+    if (cloudStatus.role !== 'owner') {
+        showToast('只有管理员可以授权');
+        return;
+    }
+    
+    try {
+        showLoading('正在授权...');
+        
+        const res = await db.collection('families').where({ code: cloudStatus.familyId }).get();
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            let editors = family.editors || [];
+            
+            if (!editors.includes(userId)) {
+                editors.push(userId);
+                await db.collection('families').where({ code: cloudStatus.familyId }).update({
+                    editors: editors
+                });
+            }
+            
+            hideLoading();
+            showToast('授权成功！该成员现可编辑记录');
+            loadFamilyMembers(); // 刷新列表
+        }
+    } catch (e) {
+        hideLoading();
+        showToast('授权失败：' + e.message);
+    }
+}
+
+// 手动添加成员（owner 操作）
+async function addMemberManually() {
+    if (cloudStatus.role !== 'owner') {
+        showToast('只有管理员可以添加成员');
+        return;
+    }
+    
+    const userId = document.getElementById('add_member_input').value.trim();
+    if (!userId) {
+        showToast('请输入成员UserID');
+        return;
+    }
+    
+    try {
+        showLoading('正在添加成员...');
+        
+        const res = await db.collection('families').where({ code: cloudStatus.familyId }).get();
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            let members = family.members || [];
+            
+            if (!members.includes(userId)) {
+                members.push(userId);
+                await db.collection('families').where({ code: cloudStatus.familyId }).update({
+                    members: members
+                });
+                showToast('添加成员成功！');
+                document.getElementById('add_member_input').value = '';
+                loadFamilyMembers(); // 刷新列表
+            } else {
+                showToast('该成员已在列表中');
+            }
+        }
+        
+        hideLoading();
+    } catch (e) {
+        hideLoading();
+        showToast('添加失败：' + e.message);
+        console.error('添加成员失败:', e);
+    }
+}
+
+// 撤销编辑权限（owner 操作）
+async function revokeEditor(userId) {
+    if (cloudStatus.role !== 'owner') {
+        showToast('只有管理员可以撤销权限');
+        return;
+    }
+    
+    if (!confirm('确定要撤回该成员的编辑权限吗？')) return;
+    
+    try {
+        showLoading('正在撤销权限...');
+        
+        const res = await db.collection('families').where({ code: cloudStatus.familyId }).get();
+        if (res.data && res.data.length > 0) {
+            const family = res.data[0];
+            let editors = family.editors || [];
+            
+            editors = editors.filter(id => id !== userId);
+            await db.collection('families').where({ code: cloudStatus.familyId }).update({
+                editors: editors
+            });
+            
+            hideLoading();
+            showToast('已撤回编辑权限');
+            loadFamilyMembers(); // 刷新列表
+        }
+    } catch (e) {
+        hideLoading();
+        showToast('撤销失败：' + e.message);
+    }
+}
+
+// ========== 本地数据管理 ==========
+function loadLocalData() {
+    localData.babyName = localStorage.getItem('baby_name');
+    localData.babyBirthday = localStorage.getItem('baby_birthday');
+    localData.theme = localStorage.getItem('app_theme') || 'warm';
+    localData.avatar = localStorage.getItem('baby_avatar');
+    localData.records = JSON.parse(localStorage.getItem('baby_records') || '[]');
+}
+
+function saveLocalData() {
+    localStorage.setItem('baby_name', localData.babyName || '');
+    localStorage.setItem('baby_birthday', localData.babyBirthday || '');
+    localStorage.setItem('app_theme', localData.theme);
+    localStorage.setItem('baby_avatar', localData.avatar || '');
+    localStorage.setItem('baby_records', JSON.stringify(localData.records));
+}
+
+// ========== 合并本地数据到云端（按日期+饮食去重） ==========
+async function mergeLocalToCloud() {
+    if (!cloudStatus.connected || !cloudStatus.familyId) return;
+    
+    try {
+        // 获取云端现有记录
+        const cloudRecordsRes = await db.collection('records').where({ familyId: cloudStatus.familyId }).get();
+        const cloudRecords = cloudRecordsRes.data || [];
+        
+        // 构建云端记录的日期+饮食去重集合
+        const cloudKeys = new Set(cloudRecords.map(r => (r.date || '') + '_' + (r.diet || '')));
+        
+        // 找出本地有但云端没有的记录
+        const newRecords = localData.records.filter(r => {
+            const key = (r.date || '') + '_' + (r.diet || '');
+            return !cloudKeys.has(key);
+        });
+        
+        // 将新记录添加到云端
+        for (const record of newRecords) {
+            await db.collection('records').add({
+                familyId: cloudStatus.familyId,
+                ...record
+            });
+        }
+        
+        console.log('合并完成，新增 ' + newRecords.length + ' 条记录到云端');
+    } catch (e) {
+        console.error('合并本地数据到云端失败:', e);
+        throw e;
+    }
+}
+
+// ========== 云端同步 ==========
+async function syncToCloud() {
+    if (!cloudStatus.connected || !cloudStatus.familyId) return;
+    
+    try {
+        // 保存宝宝信息（owner 才能修改，editor 跳过）
+        // 注意：头像和主题是个人设置，不同步到云端
+        if (cloudStatus.role === 'owner') {
+            try {
+                await db.collection('babyInfo').where({ familyId: cloudStatus.familyId }).remove();
+                await db.collection('babyInfo').add({
+                    familyId: cloudStatus.familyId,
+                    name: localData.babyName,
+                    birthday: localData.babyBirthday,
+                    // 头像不同步，每个人可以设置自己的头像
+                    // avatar: localData.avatar,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.log('保存宝宝信息失败（非 owner 可能无权限）:', e.message);
+            }
+        }
+        
+        // 保存记录（editor 和 owner 都可以添加）
+        // 注意：腾讯云 v2 SDK 不支持 update，只能 add
+        // 编辑时会在云端产生重复记录，由 syncFromCloud 合并去重
+        
+        // 先获取云端已有记录
+        const existingRes = await db.collection('records').where({ familyId: cloudStatus.familyId }).get();
+        const cloudRecords = existingRes.data || [];
+        const cloudDateMap = new Map(cloudRecords.map(r => [r.date, r]));
+        
+        // 上传本地记录（新增或编辑过的）
+        for (const record of localData.records) {
+            const { _id, _openid, id, ...cleanRecord } = record;
+            const cloudRecord = cloudDateMap.get(record.date);
+            
+            // 需要上传的条件：
+            // 1. 云端没有这条记录（新增）
+            // 2. 本地记录标记为已编辑（编辑）
+            const needsUpload = !cloudRecord || record._edited;
+            
+            if (needsUpload) {
+                try {
+                    await db.collection('records').add({
+                        familyId: cloudStatus.familyId,
+                        ...cleanRecord,
+                        updatedBy: cloudStatus.userId,
+                        updatedAt: new Date().toISOString()
+                    });
+                    console.log(cloudRecord ? '更新记录:' : '新增记录:', record.date);
+                    
+                    // 注意：不清除 _edited 标记，保持本地优先
+                } catch (e) {
+                    console.error('上传记录失败:', e);
+                }
+            }
+        }
+        
+        updateSyncStatus('connected');
+        
+    } catch (e) {
+        console.error('同步到云端失败:', e);
+        updateSyncStatus('error');
+    }
+}
+
+async function syncFromCloud() {
+    if (!cloudStatus.connected || !cloudStatus.familyId) return;
+    
+    try {
+        // 加载宝宝信息（从云端更新）
+        // 注意：头像和主题是个人设置，不同步到云端
+        const infoRes = await db.collection('babyInfo').where({ familyId: cloudStatus.familyId }).get();
+        if (infoRes.data && infoRes.data.length > 0) {
+            const info = infoRes.data[0];
+            localData.babyName = info.name;
+            localData.babyBirthday = info.birthday;
+            // 头像不同步，每个人可以设置自己的头像
+            // if (info.avatar) localData.avatar = info.avatar;
+        }
+        
+        // 头像不同步，每个人可以设置自己的头像
+        // 不从云端加载头像
+        
+        // 加载云端记录
+        let recordsRes;
+        try {
+            recordsRes = await db.collection('records').where({ familyId: cloudStatus.familyId }).orderBy('date', 'desc').get();
+        } catch(e) {
+            // orderBy 可能不支持，回退到普通查询
+            console.warn('orderBy 失败，使用普通查询:', e);
+            recordsRes = await db.collection('records').where({ familyId: cloudStatus.familyId }).get();
+        }
+        const cloudRecords = recordsRes.data || [];
+        
+        console.log('云端记录数:', cloudRecords.length, '本地记录数:', localData.records.length);
+        
+        // 合并本地和云端记录（按日期去重，本地编辑过的优先）
+        const seenDates = new Map(); // date -> record
+        
+        // 先添加本地记录（本地优先，编辑过的也优先）
+        for (const record of localData.records) {
+            // 如果同日期已有记录，检查是否是本地编辑过的
+            const existing = seenDates.get(record.date);
+            if (!existing || record._edited) {
+                seenDates.set(record.date, record);
+            }
+        }
+        
+        // 再添加云端独有的记录（本地没有的）
+        for (const cloudRecord of cloudRecords) {
+            if (!seenDates.has(cloudRecord.date)) {
+                seenDates.set(cloudRecord.date, cloudRecord);
+            }
+        }
+        
+        // 转换为数组
+        const mergedRecords = Array.from(seenDates.values());
+        
+        console.log('合并后记录数:', mergedRecords.length, '去重:', localData.records.length + cloudRecords.length - mergedRecords.length);
+        
+        // 按日期排序（最新的在前）
+        mergedRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+        localData.records = mergedRecords;
+        
+        // 保存到本地
+        saveLocalData();
+        
+        // 如果本地有数据且是编辑者，同步到云端
+        if (localData.records.length > 0 && cloudStatus.canEdit) {
+            await syncToCloud();
+        }
+        
+        // 更新UI
+        updateUI();
+        updateSyncStatus('connected');
+        
+    } catch (e) {
+        console.error('从云端同步失败:', e);
+    }
+}
+
+// ========== UI 更新 ==========
+function updateUI() {
+    const hasInfo = !!localData.babyBirthday;
+    
+    document.getElementById('setup_hint_card').style.display = hasInfo ? 'none' : 'block';
+    document.getElementById('baby_info_card').style.display = hasInfo ? 'block' : 'none';
+    document.getElementById('edit_baby_info_card').style.display = 'none';
+    
+    if (hasInfo) {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('home_baby_name').textContent = localData.babyName || '宝宝';
+        document.getElementById('home_today_age').textContent = getAgeYMD(localData.babyBirthday, today);
+        document.getElementById('home_baby_name2').textContent = localData.babyName || '宝宝';
+        document.getElementById('home_today_age2').textContent = getAgeYMD(localData.babyBirthday, today);
+        
+        // 统计数据
+        const uniqueDays = new Set(localData.records.map(r => r.date)).size;
+        const totalPoops = localData.records.reduce((s, r) => s + (parseInt(r.poopCnt) || 0), 0);
+        const avgPoop = uniqueDays > 0 ? (totalPoops / uniqueDays).toFixed(1) : '0';
+        
+        document.getElementById('home_stat_days').textContent = uniqueDays;
+        document.getElementById('home_stat_avg_poop').textContent = avgPoop;
+        document.getElementById('home_stat_days2').textContent = uniqueDays;
+        document.getElementById('home_stat_avg_poop2').textContent = avgPoop;
+        
+        // 健康状态
+        const todayRecords = localData.records.filter(r => r.date === today);
+        const healthStatEl = document.getElementById('home_stat_health');
+        if (todayRecords.length > 0) {
+            const latestHealth = todayRecords[todayRecords.length - 1].health;
+            healthStatEl.textContent = latestHealth;
+        } else {
+            healthStatEl.textContent = '未记录';
+        }
+    }
+    
+    // 更新头像
+    updateAvatarDisplay();
+}
+
+function updateAvatarDisplay() {
+    document.querySelectorAll('.baby-avatar').forEach(el => {
+        if (localData.avatar) {
+            el.innerHTML = '<img src="' + localData.avatar + '" alt="头像" onerror="this.style.display=\'none\';">';
+            el.style.background = 'transparent';
+        } else {
+            el.innerHTML = '👶';
+            el.style.background = '';
+        }
+    });
+    
+    const preview = document.getElementById('avatar_preview_label');
+    if (preview) {
+        if (localData.avatar) {
+            preview.innerHTML = '<img src="' + localData.avatar + '" alt="头像"><div class="avatar-overlay">更换</div>';
+            preview.style.background = 'transparent';
+        } else {
+            preview.innerHTML = '👶<div class="avatar-overlay">上传</div>';
+            preview.style.background = '';
+        }
+    }
+}
+
+// ========== 页面导航 ==========
+function goAddWithPermissionCheck() {
+    if (!cloudStatus.canEdit) {
+        showToast('你没有编辑权限，请联系管理员授权');
+        return;
+    }
+    go('add');
+}
+
+// 页面导航历史（用于返回）
+let pageHistory = ['main'];
+
+// 返回上一页（供 Android 调用）
+function goBackPage() {
+    window.shouldExit = false;
+    
+    // 先检查是否有打开的弹窗
+    const modals = document.querySelectorAll('.modal.active, .crop-modal.active');
+    if (modals.length > 0) {
+        modals.forEach(m => m.classList.remove('active'));
+        return;
+    }
+    
+    // 获取当前页面
+    const currentPage = document.querySelector('.page.active');
+    const currentId = currentPage ? currentPage.id.replace('page-', '') : '';
+    
+    // 如果当前是编辑页，返回历史中的上一个页面（不 pop）
+    if (currentId === 'add') {
+        let prevPage = 'main';
+        for (let i = pageHistory.length - 1; i >= 0; i--) {
+            if (pageHistory[i] !== 'add') {
+                prevPage = pageHistory[i];
+                break;
+            }
+        }
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + prevPage).classList.add('active');
+        if (prevPage === 'list') { showRecords(); }
+        return;
+    }
+    
+    // 检查页面历史（当前页面必须在历史中才 pop）
+    if (pageHistory.length > 1 && pageHistory[pageHistory.length - 1] === currentId) {
+        pageHistory.pop();
+        const prevPage = pageHistory[pageHistory.length - 1];
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + prevPage).classList.add('active');
+        if (prevPage === 'list') { showRecords(); }
+        return;
+    } else if (pageHistory.length > 1) {
+        // 当前页面不在历史末尾，直接返回上一个页面
+        const prevPage = pageHistory[pageHistory.length - 1];
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + prevPage).classList.add('active');
+        if (prevPage === 'list') { showRecords(); }
+        return;
+    }
+    
+    // 没有历史记录，在主页，调用 Android 退出
+    window.shouldExit = true;
+    if (typeof Android !== 'undefined' && Android.exitApp) {
+        Android.exitApp();
+    }
+}
+
+function go(page, isEdit) {
+    console.log('go 被调用:', page, 'isEdit:', isEdit, '当前历史:', JSON.stringify(pageHistory));
+    
+    // 记录当前页面到历史（编辑模式不 push，避免历史混乱）
+    if (!isEdit) {
+        const currentPage = document.querySelector('.page.active');
+        if (currentPage) {
+            const currentId = currentPage.id.replace('page-', '');
+            if (currentId !== page) {
+                pageHistory.push(currentId);
+                console.log('push 到历史:', currentId, '新历史:', JSON.stringify(pageHistory));
+            }
+        }
+    }
+    
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    
+    if (page === 'birth') {
+        document.getElementById('baby_name_input').value = localData.babyName || '';
+        document.getElementById('birth_date').value = localData.babyBirthday || '';
+        updateThemeUI(localData.theme);
+    }
+    if (page === 'add' && !isEdit) {
+        document.getElementById('edit-id').value = '';
+        document.getElementById('edit-title').textContent = '添加记录';
+        document.getElementById('record_date').valueAsDate = new Date();
+        document.getElementById('health_status').value = '健康';
+        document.getElementById('health_extra').value = '';
+        document.getElementById('health_extra_group').style.display = 'none';
+        document.getElementById('poop_count').value = 0;
+        document.getElementById('poop_status').value = '💧 稀便';
+        document.getElementById('poop_status_group').style.display = 'none';
+        document.getElementById('diet').value = '';
+        document.getElementById('note').value = '';
+        updateBabyAge();
+    }
+    if (page === 'list') { document.getElementById('search_key').value = ''; showRecords(); }
+    if (page === 'import') { resetImportUI(); document.getElementById('import_current').textContent = localData.records.length; }
+    if (page === 'export') { document.getElementById('export_current').textContent = localData.records.length; }
+}
+
+// 从编辑页面返回（根据历史返回上一页）
+function goBackFromEdit() {
+    console.log('goBackFromEdit 被调用, 当前历史:', JSON.stringify(pageHistory));
+    
+    // 获取当前页面之前的页面（不 pop）
+    const currentPage = document.querySelector('.page.active');
+    const currentId = currentPage ? currentPage.id.replace('page-', '') : '';
+    console.log('当前页面:', currentId);
+    
+    // 找到历史中的上一个不同页面
+    let prevPage = 'main';
+    for (let i = pageHistory.length - 1; i >= 0; i--) {
+        if (pageHistory[i] !== currentId) {
+            prevPage = pageHistory[i];
+            break;
+        }
+    }
+    
+    console.log('将返回到:', prevPage);
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + prevPage).classList.add('active');
+    if (prevPage === 'list') { showRecords(); }
+}
+
+// 返回到指定页面（不 push 历史，直接跳转）
+function goBack(targetPage) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + targetPage).classList.add('active');
+    
+    // 回到主页时重置历史
+    if (targetPage === 'main') {
+        pageHistory = ['main'];
+    }
+    // 回到列表页时，确保历史正确
+    if (targetPage === 'list') {
+        // 如果当前不在 list，添加 list 到历史
+        if (pageHistory[pageHistory.length - 1] !== 'list') {
+            pageHistory.push('list');
+        }
+        document.getElementById('search_key').value = '';
+        showRecords();
+    }
+}
+
+// ========== 保存宝宝信息 ==========
+async function saveBirthday() {
+    const name = document.getElementById('baby_name_input').value.trim();
+    const date = document.getElementById('birth_date').value;
+    
+    if (!name) { showToast('请输入宝宝名字'); return; }
+    if (!date) { showToast('请选择出生日期'); return; }
+    
+    localData.babyName = name;
+    localData.babyBirthday = date;
+    saveLocalData();
+    await syncToCloud();
+    
+    showToast('保存成功');
+    updateUI();
+    goBack('main');
+}
+
+// ========== 主题 ==========
+function loadTheme() {
+    document.body.setAttribute('data-theme', localData.theme);
+}
+
+function selectTheme(name) {
+    document.body.setAttribute('data-theme', name);
+    localData.theme = name;
+    saveLocalData();
+    updateThemeUI(name);
+    showToast('主题已切换');
+}
+
+function updateThemeUI(name) {
+    document.querySelectorAll('.theme-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.theme === name);
+    });
+}
+
+// ========== 工具函数 ==========
+function getAgeYMD(birthStr, nowStr) {
+    const b = new Date(birthStr), n = new Date(nowStr);
+    let y = n.getFullYear() - b.getFullYear();
+    let m = n.getMonth() - b.getMonth();
+    let d = n.getDate() - b.getDate();
+    if (d < 0) { m--; d += new Date(n.getFullYear(), n.getMonth(), 0).getDate(); }
+    if (m < 0) { y--; m += 12; }
+    return `${y}岁${m}月${d}天`;
+}
+
+function showToast(msg) {
+    let t = document.querySelector('.toast');
+    if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
+    t.textContent = msg; t.style.opacity = '1';
+    setTimeout(() => { t.style.opacity = '0'; }, 2200);
+}
+
+function showLoading(msg) {
+    document.getElementById('loading_overlay').classList.remove('hidden');
+    document.getElementById('loading_text').textContent = msg || '加载中...';
+}
+
+function hideLoading() {
+    document.getElementById('loading_overlay').classList.add('hidden');
+}
+
+function updateLoadingText(msg) {
+    document.getElementById('loading_text').textContent = msg;
+}
+
+// ========== 记录管理 ==========
+function updateBabyAge() {
+    const birth = localData.babyBirthday;
+    const rec = document.getElementById('record_date').value;
+    document.getElementById('baby_age').textContent = birth && rec ? getAgeYMD(birth, rec) : '请先设置生日';
+}
+document.getElementById('record_date').addEventListener('change', updateBabyAge);
+document.getElementById('record_date').valueAsDate = new Date();
+
+async function saveRecord() {
+    // 检查编辑权限
+    console.log('saveRecord 开始 - canEdit:', cloudStatus.canEdit);
+    if (!cloudStatus.canEdit) {
+        showToast('你没有编辑权限，请联系管理员授权');
+        return;
+    }
+    
+    const date = document.getElementById('record_date').value;
+    const health = document.getElementById('health_status').value;
+    const healthExtra = document.getElementById('health_extra').value.trim();
+    const poopCnt = document.getElementById('poop_count').value;
+    const poopSta = document.getElementById('poop_status').value;
+    const diet = document.getElementById('diet').value.trim();
+    const note = document.getElementById('note').value.trim();
+    const editId = document.getElementById('edit-id').value;
+    
+    console.log('保存记录 - editId:', editId, 'diet:', diet);
+    
+    if (!localData.babyBirthday) { showToast('请先设置生日'); return; }
+    if (!date || !diet) { showToast('日期和饮食记录必填'); return; }
+    
+    const age = getAgeYMD(localData.babyBirthday, date);
+    const status = poopCnt > 0 ? poopSta : '';
+    const data = { 
+        id: editId || Date.now().toString(), 
+        date, 
+        age, 
+        health, 
+        healthExtra, 
+        poopCnt, 
+        poopSta: status, 
+        diet, 
+        note,
+        _edited: true  // 标记为已编辑，需要上传到云端
+    };
+    
+    console.log('保存记录 - editId:', editId, 'type:', typeof editId);
+    console.log('保存记录 - 当前记录数:', localData.records.length);
+    
+    if (editId) {
+        // 编辑：需要类型转换（editId 是字符串，localData.id 可能是数字）
+        const editIdNum = Number(editId);
+        console.log('编辑模式 - 查找 id:', editId, '(字符串) 或', editIdNum, '(数字)');
+        console.log('编辑模式 - 现有记录 ids:', localData.records.map(r => ({id: r.id, type: typeof r.id})));
+        
+        const existingRecord = localData.records.find(r => r.id === editId || r.id === editIdNum);
+        console.log('编辑模式 - 找到的记录:', existingRecord);
+        
+        if (existingRecord) {
+            localData.records = localData.records.map(r => (r.id === editId || r.id === editIdNum) ? data : r);
+            console.log('编辑后记录数:', localData.records.length);
+        } else {
+            // 没找到匹配的记录，作为新增处理
+            console.log('未找到匹配记录，作为新增处理');
+            localData.records.push(data);
+            console.log('新增后记录数:', localData.records.length);
+        }
+    } else {
+        localData.records.push(data);
+        console.log('新增后记录数:', localData.records.length);
+    }
+    
+    console.log('保存前 - records:', JSON.stringify(localData.records));
+    saveLocalData();
+    console.log('已保存到本地');
+    
+    try {
+        await syncToCloud();
+        console.log('已同步到云端');
+    } catch (e) {
+        console.error('同步失败:', e);
+    }
+    
+    showToast(editId ? '编辑成功' : '添加成功');
+    updateUI();
+    goBack('list');
+}
+
+function editRecord(id) {
+    // 检查编辑权限
+    if (!cloudStatus.canEdit) {
+        showToast('你没有编辑权限，请联系管理员授权');
+        return;
+    }
+    
+    const r = localData.records.find(x => String(x.id) === String(id));
+    if (!r) { showToast('记录不存在'); return; }
+    
+    document.getElementById('edit-id').value = String(r.id);
+    document.getElementById('edit-title').textContent = '编辑记录';
+    document.getElementById('record_date').value = r.date || new Date().toISOString().split('T')[0];
+    document.getElementById('health_status').value = r.health || '健康';
+    document.getElementById('health_extra').value = r.healthExtra || '';
+    document.getElementById('health_extra_group').style.display = ['生病','外伤','疫苗','其他'].includes(r.health) ? 'block' : 'none';
+    document.getElementById('poop_count').value = parseInt(r.poopCnt) || 0;
+    document.getElementById('poop_status_group').style.display = parseInt(r.poopCnt) > 0 ? 'block' : 'none';
+    document.getElementById('poop_status').value = r.poopSta || '💧 稀便';
+    document.getElementById('diet').value = r.diet || '';
+    document.getElementById('note').value = r.note || '';
+    
+    updateBabyAge();
+    
+    // 确保列表页在历史中（编辑时不自动 push）
+    if (pageHistory[pageHistory.length - 1] !== 'list') {
+        pageHistory.push('list');
+    }
+    
+    go('add', true);
+}
+
+function renderRecords(list, key) {
+    const container = document.getElementById('records_list');
+    if (!list.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无记录，快去添加第一条吧~</div></div>';
+        return;
+    }
+    
+    // 高亮函数
+    function highlight(text, keyword) {
+        if (!keyword || !text) return text;
+        const regex = new RegExp('(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        return text.toString().replace(regex, '<span class="highlight">$1</span>');
+    }
+    
+    container.innerHTML = list.map(r => {
+        const status = r.poopCnt > 0 ? `状态：${r.poopSta}` : '';
+        const healthText = (r.health || '健康') + (r.healthExtra ? `（${r.healthExtra}）` : '');
+        // 根据权限决定点击行为
+        const clickAction = cloudStatus.canEdit ? 'editRecord(\'' + r.id + '\')' : 'showViewOnlyToast()';
+        // 显示备注（如果有）
+        const noteHtml = r.note ? '<div class="rec-row"><span><span class="lab-note">📝 备注：</span>' + highlight(r.note, key) + '</span></div>' : '';
+        return '<div class="record-item" onclick="' + clickAction + '"><div class="rec-row rec-row1"><span><span class="lab-date">日期：</span>' + highlight(r.date, key) + ' <span class="lab-age">' + highlight(r.age || '', key) + '</span></span><span><span class="lab-health">健康：</span>' + highlight(healthText, key) + '</span></div><div class="rec-row"><span><span class="lab-poop">排便：</span>' + (parseInt(r.poopCnt) || 0) + '次</span></div><div class="rec-row"><span><span class="lab-diet">饮食：</span>' + highlight(r.diet || '', key) + '</span></div>' + noteHtml + '</div>';
+    }).join('');
+}
+
+// 仅查看权限的提示
+function showViewOnlyToast() {
+    showToast('👁️ 仅查看模式 - 如需编辑请联系管理员授权');
+}
+
+function showRecords() {
+    const list = localData.records.sort((a, b) => new Date(b.date) - new Date(a.date));
+    renderRecords(list, '');
+}
+
+function searchRecords() {
+    const key = document.getElementById('search_key').value.trim().toLowerCase();
+    const filtered = key ? localData.records.filter(r => Object.values(r).some(v => v?.toString().toLowerCase().includes(key))) : localData.records;
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    renderRecords(filtered, key);
+}
+
+// ========== 头像裁剪 ==========
+let cropImage = null, cropCanvas = null, cropCtx = null, cropContainer = null;
+let cropState = { scale: 1, x: 0, y: 0, isDragging: false, startX: 0, startY: 0 };
+
+function selectAvatarFile() {
+    const input = document.getElementById('avatar_file_input');
+    input.value = '';
+    // 使用 dispatchEvent 触发点击
+    if (typeof input.click === 'function') {
+        input.click();
+    } else {
+        // fallback: 使用 MouseEvent
+        const evt = new MouseEvent('click', { bubbles: true, cancelable: true });
+        input.dispatchEvent(evt);
+    }
+}
+
+function handleAvatarSelect(event) {
+    console.log('handleAvatarSelect 被调用');
+    const file = event.target.files[0];
+    console.log('选择的文件:', file);
+    if (!file) { console.log('没有文件'); return; }
+    if (file.size > 50 * 1024 * 1024) { showToast('图片不能超过50MB'); event.target.value = ''; return; }
+    
+    showToast('正在加载图片...');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        console.log('FileReader 加载完成');
+        cropImage = new Image();
+        cropImage.onload = function() {
+            console.log('图片加载完成，准备打开裁剪');
+            openCropModal();
+        };
+        cropImage.onerror = function() {
+            console.error('图片加载失败');
+            showToast('图片加载失败');
+        };
+        cropImage.src = e.target.result;
+    };
+    reader.onerror = function() {
+        console.error('FileReader 失败');
+        showToast('读取文件失败');
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+function openCropModal() {
+    cropCanvas = document.getElementById('crop_canvas');
+    cropContainer = document.getElementById('crop_container');
+    cropCtx = cropCanvas.getContext('2d');
+    cropState = { scale: 1, x: 0, y: 0, isDragging: false, startX: 0, startY: 0 };
+    
+    const maxSize = 1200;
+    if (cropImage.width > maxSize || cropImage.height > maxSize) {
+        const ratio = Math.min(maxSize / cropImage.width, maxSize / cropImage.height);
+        cropCanvas.width = Math.floor(cropImage.width * ratio);
+        cropCanvas.height = Math.floor(cropImage.height * ratio);
+    } else {
+        cropCanvas.width = cropImage.width;
+        cropCanvas.height = cropImage.height;
+    }
+    
+    renderCropCanvas();
+    bindCropEvents();
+    document.getElementById('zoom_slider').value = 1;
+    document.getElementById('crop_modal').classList.add('active');
+}
+
+function renderCropCanvas() {
+    if (!cropCanvas || !cropImage) return;
+    cropCtx.fillStyle = '#ffffff';
+    cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+    const imgRatio = cropImage.width / cropImage.height;
+    const canvasRatio = cropCanvas.width / cropCanvas.height;
+    let drawWidth, drawHeight;
+    if (imgRatio > canvasRatio) { drawHeight = cropCanvas.height * cropState.scale; drawWidth = drawHeight * imgRatio; }
+    else { drawWidth = cropCanvas.width * cropState.scale; drawHeight = drawWidth / imgRatio; }
+    const drawX = cropCanvas.width / 2 - drawWidth / 2 + cropState.x;
+    const drawY = cropCanvas.height / 2 - drawHeight / 2 + cropState.y;
+    cropCtx.drawImage(cropImage, drawX, drawY, drawWidth, drawHeight);
+}
+
+function bindCropEvents() {
+    cropContainer.addEventListener('touchstart', e => { e.preventDefault(); if (e.touches.length === 1) { cropState.isDragging = true; cropState.startX = e.touches[0].clientX - cropState.x; cropState.startY = e.touches[0].clientY - cropState.y; } }, { passive: false });
+    cropContainer.addEventListener('touchmove', e => { e.preventDefault(); if (e.touches.length === 1 && cropState.isDragging) { cropState.x = e.touches[0].clientX - cropState.startX; cropState.y = e.touches[0].clientY - cropState.startY; renderCropCanvas(); } }, { passive: false });
+    cropContainer.addEventListener('touchend', () => cropState.isDragging = false);
+    cropContainer.addEventListener('mousedown', e => { cropState.isDragging = true; cropState.startX = e.clientX - cropState.x; cropState.startY = e.clientY - cropState.y; });
+    cropContainer.addEventListener('mousemove', e => { if (cropState.isDragging) { cropState.x = e.clientX - cropState.startX; cropState.y = e.clientY - cropState.startY; renderCropCanvas(); } });
+    cropContainer.addEventListener('mouseup', () => cropState.isDragging = false);
+    cropContainer.addEventListener('wheel', e => { e.preventDefault(); cropState.scale = Math.max(0.5, Math.min(3, cropState.scale * (e.deltaY > 0 ? 0.9 : 1.1))); document.getElementById('zoom_slider').value = cropState.scale; renderCropCanvas(); }, { passive: false });
+}
+
+function zoomIn() { cropState.scale = Math.min(3, cropState.scale + 0.2); document.getElementById('zoom_slider').value = cropState.scale; renderCropCanvas(); }
+function zoomOut() { cropState.scale = Math.max(0.5, cropState.scale - 0.2); document.getElementById('zoom_slider').value = cropState.scale; renderCropCanvas(); }
+function resetZoom() { cropState.scale = 1; cropState.x = 0; cropState.y = 0; document.getElementById('zoom_slider').value = 1; renderCropCanvas(); }
+function onZoomSliderChange(v) { cropState.scale = parseFloat(v); renderCropCanvas(); }
+
+function closeCropModal() {
+    document.getElementById('crop_modal').classList.remove('active');
+    cropImage = null;
+}
+
+async function confirmCrop() {
+    if (!cropCanvas || !cropImage) return;
+    
+    // 创建最终裁剪画布（正方形，不裁圆形，由 CSS border-radius 控制显示）
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = 280;
+    finalCanvas.height = 280;
+    const finalCtx = finalCanvas.getContext('2d');
+    
+    // 根据用户的缩放和偏移，从 canvas 中心裁剪出 280x280 区域
+    const srcWidth = cropCanvas.width;
+    const srcHeight = cropCanvas.height;
+    
+    // 计算源裁剪区域（居中 + 用户偏移）
+    // 用户看到的圆形区域对应 canvas 的中心
+    const centerX = srcWidth / 2 + cropState.x;
+    const centerY = srcHeight / 2 + cropState.y;
+    
+    // 计算裁剪起始点（从中心向四周扩展 140px）
+    let srcX = centerX - 140;
+    let srcY = centerY - 140;
+    
+    // 边界检查：确保不超出 canvas 范围
+    srcX = Math.max(0, Math.min(srcX, srcWidth - 280));
+    srcY = Math.max(0, Math.min(srcY, srcHeight - 280));
+    
+    // 如果 canvas 小于 280，则使用整个 canvas
+    const cropWidth = Math.min(280, srcWidth);
+    const cropHeight = Math.min(280, srcHeight);
+    
+    // 绘制白色背景
+    finalCtx.fillStyle = '#ffffff';
+    finalCtx.fillRect(0, 0, 280, 280);
+    
+    // 从源 canvas 裁剪指定区域到目标 canvas
+    // 如果源区域不足 280x280，则居中显示
+    const destX = (280 - cropWidth) / 2;
+    const destY = (280 - cropHeight) / 2;
+    
+    finalCtx.drawImage(
+        cropCanvas,
+        srcX, srcY, cropWidth, cropHeight,
+        destX, destY, cropWidth, cropHeight
+    );
+    
+    // 将 canvas 转为 base64（JPEG 格式，质量 0.9）
+    localData.avatar = finalCanvas.toDataURL('image/jpeg', 0.9);
+    saveLocalData();
+    updateAvatarDisplay();
+    await syncToCloud();
+    showToast('头像已更新');
+    closeCropModal();
+}
+
+// ========== 导入导出 ==========
+let pendingImportData = null;
+
+function selectCSVFile() {
+    const input = document.getElementById('csv_file_input');
+    input.value = ''; // 清空，允许重复选择同一文件
+    
+    // 尝试触发文件选择
+    try {
+        input.click();
+    } catch (e) {
+        console.error('文件选择失败:', e);
+        showToast('请使用浏览器打开此功能，或在电脑上操作');
+    }
+}
+
+function updateImportMode() {
+    const mode = document.getElementById('import_mode').value;
+    document.getElementById('import_mode_disp').textContent = mode === 'merge' ? '合并' : '覆盖';
+}
+
+function resetImportUI() {
+    pendingImportData = null;
+    document.getElementById('file_preview').style.display = 'none';
+    document.getElementById('do_import_btn').style.display = 'none';
+    document.getElementById('import_result').innerHTML = '';
+}
+
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                current += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (ch === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += ch;
+        }
+    }
+    result.push(current.trim());
+    return result;
+}
+
+async function handleCSVFile(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        showToast('未选择文件');
+        return;
+    }
+    
+    // 检查文件类型
+    const fileName = file.name.toLowerCase();
+    if (!fileName.endsWith('.csv') && !fileName.endsWith('.txt')) {
+        showToast('请选择 .csv 或 .txt 文件');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        parseAndPreview(ev.target.result, file.name);
+    };
+    reader.readAsText(file, 'UTF-8');
+    
+    // 重置 input，允许重复选择同一文件
+    event.target.value = '';
+}
+
+function parseAndPreview(content, fileName) {
+    const lines = content.trim().split(/\r?\n/);
+    if (lines.length < 2) {
+        showImportResult('error', '文件内容为空');
+        return;
+    }
+    
+    const headers = parseCSVLine(lines[0]);
+    const colMap = {
+        date: headers.findIndex(h => ['日期', 'date'].includes(h.trim())),
+        age: headers.findIndex(h => ['年龄', 'age'].includes(h.trim())),
+        health: headers.findIndex(h => ['健康', 'health'].includes(h.trim())),
+        healthExtra: headers.findIndex(h => ['健康补充', 'healthExtra'].includes(h.trim())),
+        poopCnt: headers.findIndex(h => ['排便次数', 'poopCnt'].includes(h.trim())),
+        poopSta: headers.findIndex(h => ['便便状态', 'poopSta'].includes(h.trim())),
+        diet: headers.findIndex(h => ['饮食', 'diet'].includes(h.trim())),
+        note: headers.findIndex(h => ['备注', 'note'].includes(h.trim()))
+    };
+    
+    if (colMap.date < 0) {
+        showImportResult('error', '无法识别日期列');
+        return;
+    }
+    
+    const records = [];
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const cols = parseCSVLine(lines[i]);
+        if (cols.length <= colMap.date) continue;
+        
+        const dateVal = cols[colMap.date]?.trim();
+        const dietVal = colMap.diet >= 0 ? (cols[colMap.diet] || '').trim() : '';
+        
+        if (!dateVal || !dietVal) continue;
+        
+        records.push({
+            id: Date.now().toString() + '_' + i,
+            date: dateVal,
+            age: colMap.age >= 0 ? (cols[colMap.age] || '').trim() : '',
+            health: colMap.health >= 0 ? (cols[colMap.health] || '健康').trim() : '健康',
+            healthExtra: colMap.healthExtra >= 0 ? (cols[colMap.healthExtra] || '').trim() : '',
+            poopCnt: colMap.poopCnt >= 0 ? (cols[colMap.poopCnt] || '0').trim() : '0',
+            poopSta: colMap.poopSta >= 0 ? (cols[colMap.poopSta] || '').trim() : '',
+            diet: dietVal,
+            note: colMap.note >= 0 ? (cols[colMap.note] || '').trim() : ''
+        });
+    }
+    
+    if (!records.length) {
+        showImportResult('error', '未能解析出有效记录');
+        return;
+    }
+    
+    pendingImportData = records;
+    
+    // 显示预览
+    document.getElementById('preview_info').innerHTML = `
+        <div class="preview-row"><span class="label">文件名</span><span class="val">${fileName}</span></div>
+        <div class="preview-row"><span class="label">解析记录</span><span class="val highlight">${records.length} 条</span></div>
+        <div class="preview-sample">预览: ${records[0].date} — ${records[0].diet.substring(0, 30)}${records[0].diet.length > 30 ? '...' : ''}</div>`;
+    
+    document.getElementById('file_preview').style.display = 'block';
+    document.getElementById('do_import_btn').style.display = 'block';
+}
+
+async function doImport() {
+    if (!pendingImportData || !pendingImportData.length) {
+        showImportResult('error', '没有可导入的数据');
+        return;
+    }
+    
+    const mode = document.getElementById('import_mode').value;
+    let added = 0;
+    let skipped = 0;
+    
+    if (mode === 'replace') {
+        // 覆盖模式：清空现有记录，全部替换
+        localData.records = [...pendingImportData];
+        added = pendingImportData.length;
+    } else {
+        // 合并模式：按日期去重，保留现有记录，添加新记录
+        const existingDates = new Set(localData.records.map(r => r.date));
+        pendingImportData.forEach(r => {
+            if (!existingDates.has(r.date)) {
+                localData.records.push(r);
+                added++;
+                existingDates.add(r.date);
+            } else {
+                skipped++;
+            }
+        });
+    }
+    
+    // 按日期排序（降序，最新的在前面）
+    localData.records.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // 保存到本地存储
+    saveLocalData();
+    
+    // 同步到云端
+    await syncToCloud();
+    
+    // 更新UI
+    document.getElementById('import_current').textContent = localData.records.length;
+    
+    let msg = `导入完成！新增 ${added} 条记录`;
+    if (skipped > 0) {
+        msg += `，跳过 ${skipped} 条重复记录`;
+    }
+    showImportResult('success', msg);
+    
+    pendingImportData = null;
+    document.getElementById('file_preview').style.display = 'none';
+    document.getElementById('do_import_btn').style.display = 'none';
+}
+
+function showImportResult(type, msg) {
+    document.getElementById('import_result').innerHTML = `<div class="result-msg result-${type}">${msg}</div>`;
+}
+
+function exportCSV() {
+    if (!localData.records.length) { showToast('暂无数据'); return; }
+    let content = '日期,年龄,健康,健康补充,排便次数,便便状态,饮食,备注\n';
+    localData.records.forEach(r => {
+        content += `${r.date},${r.age || ''},${r.health || '健康'},${r.healthExtra || ''},${r.poopCnt || 0},${r.poopSta || ''},"${r.diet || ''}","${r.note || ''}"\n`;
+    });
+    const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = '宝宝成长记录.csv';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    showToast('CSV 导出成功');
+}
+
+// ========== 报表 ==========
+function generateReport() {
+    const type = document.getElementById('report_type').value;
+    const now = new Date();
+    let start, end;
+    if (type === 'week') { const d = new Date(now); d.setDate(d.getDate() - d.getDay()); start = d; end = now; }
+    else if (type === 'month') { start = new Date(now.getFullYear(), now.getMonth(), 1); end = now; }
+    else if (type === 'quarter') { const q = Math.floor(now.getMonth() / 3); start = new Date(now.getFullYear(), q * 3, 1); end = now; }
+    else if (type === 'year') { start = new Date(now.getFullYear(), 0, 1); end = now; }
+    else { start = new Date(1970, 0, 1); end = now; }
+    
+    const filtered = localData.records.filter(r => { const d = new Date(r.date); return d >= start && d <= end; });
+    const totalPoop = filtered.reduce((s, r) => s + (parseInt(r.poopCnt) || 0), 0);
+    const avgPoop = filtered.length ? (totalPoop / filtered.length).toFixed(1) : 0;
+    
+    document.getElementById('report_result').innerHTML = '<div class="form-card"><div class="report-period"><div class="period-label">统计周期</div><div class="period-value">' + start.toLocaleDateString() + ' ~ ' + end.toLocaleDateString() + '</div></div><div class="report-stats-grid"><div class="report-stat-card"><div class="report-stat-val">' + filtered.length + '</div><div class="report-stat-label">总记录</div></div><div class="report-stat-card"><div class="report-stat-val">' + totalPoop + '</div><div class="report-stat-label">总排便</div></div><div class="report-stat-card"><div class="report-stat-val">' + avgPoop + '</div><div class="report-stat-label">日均排便</div></div><div class="report-stat-card"><div class="report-stat-val">' + (new Set(filtered.map(r => r.health)).size || 0) + '</div><div class="report-stat-label">健康状态</div></div></div></div>';
+}
+
+// ========== 家庭弹窗 ==========
+async function showFamilyModal() {
+    document.getElementById('family_modal').classList.add('active');
+    
+    // 检查是否已被添加到某个家庭（即使已有 familyId，也要验证）
+    if (cloudStatus.connected) {
+        try {
+            console.log('检查是否已被添加到家庭...');
+            const res = await db.collection('families').where({
+                members: cloudStatus.userId
+            }).get();
+            
+            if (res.data && res.data.length > 0) {
+                // 找到包含当前用户的家庭
+                const family = res.data[0];
+                console.log('发现家庭:', family.code, 'createdBy:', family.createdBy, 'myId:', cloudStatus.userId);
+                
+                // 如果当前 familyId 和查到的不同，或者没有 familyId，更新它
+                if (cloudStatus.familyId !== family.code) {
+                    console.log('更新家庭ID:', family.code);
+                    cloudStatus.familyId = family.code;
+                    localStorage.setItem('familyId', family.code);
+                    
+                    // 同步云端数据
+                    await syncFromCloud();
+                    showToast('已同步家庭数据！');
+                }
+            } else if (cloudStatus.familyId) {
+                // 有 familyId 但查不到，可能是旧数据，清除它
+                console.log('清除无效的家庭ID');
+                cloudStatus.familyId = null;
+                localStorage.removeItem('familyId');
+            }
+        } catch (e) {
+            console.error('检查家庭失败:', e);
+        }
+    }
+    
+    if (cloudStatus.familyId) {
+        showFamilyInfoSection();
+    } else {
+        showFamilyCreateSection();
+    }
+}
+
+function closeFamilyModal() {
+    document.getElementById('family_modal').classList.remove('active');
+}
+
+function showFamilyInfoSection() {
+    document.getElementById('family_create_section').style.display = 'none';
+    document.getElementById('family_join_section').style.display = 'none';
+    document.getElementById('family_info_section').style.display = 'block';
+    
+    // 更新权限提示
+    const hintEl = document.getElementById('permission_hint');
+    if (hintEl) {
+        if (cloudStatus.role === 'owner') {
+            hintEl.textContent = '可编辑记录、管理成员权限';
+        } else if (cloudStatus.role === 'editor') {
+            hintEl.textContent = '可添加和编辑记录';
+        } else {
+            hintEl.textContent = '仅可查看记录，无法编辑';
+        }
+    }
+    
+    // 如果是 owner，显示成员管理区域
+    const membersSection = document.getElementById('family_members_section');
+    if (membersSection) {
+        if (cloudStatus.role === 'owner') {
+            membersSection.style.display = 'block';
+            loadFamilyMembers(); // 加载成员列表
+        } else {
+            membersSection.style.display = 'none';
+        }
+    }
+}
+
+function showFamilyCreateSection() {
+    document.getElementById('family_create_section').style.display = 'block';
+    document.getElementById('family_join_section').style.display = 'none';
+    document.getElementById('family_info_section').style.display = 'none';
+    // 显示当前用户ID
+    const createUserIdEl = document.getElementById('create_user_id');
+    if (createUserIdEl && cloudStatus.userId) {
+        createUserIdEl.textContent = cloudStatus.userId;
+    }
+}
+
+function showFamilyJoinSection() {
+    document.getElementById('family_create_section').style.display = 'none';
+    document.getElementById('family_join_section').style.display = 'block';
+    document.getElementById('family_info_section').style.display = 'none';
+    // 显示当前用户ID
+    const joinUserIdEl = document.getElementById('join_user_id');
+    if (joinUserIdEl && cloudStatus.userId) {
+        joinUserIdEl.textContent = cloudStatus.userId;
+    }
+}
+
+// ========== 更新日志 ==========
+function showUpdateLog() {
+    const content = document.getElementById('update_log_content');
+    content.innerHTML = updateLogs.map(log => '<div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f3f4f6;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:15px;font-weight:700;color:var(--primary);">' + log.version + '</span><span style="font-size:12px;color:#94a3b8;">' + log.date + '</span></div><ul style="margin:0;padding-left:18px;font-size:13px;color:#4b5563;line-height:1.8;">' + log.changes.map(c => '<li>' + c + '</li>').join('') + '</ul></div>').join('');
+    document.getElementById('update_log_modal').classList.add('active');
+}
+
+function closeUpdateLog() {
+    document.getElementById('update_log_modal').classList.remove('active');
+}
+
+// ========== 重置 ==========
+let resetClickCount = 0;
+document.getElementById('resetClick').onclick = () => {
+    if (++resetClickCount >= 5) {
+        if (confirm('确定重置所有数据？此操作不可恢复！')) { localStorage.clear(); location.reload(); }
+        resetClickCount = 0;
+    }
+};
+
+// ========== 事件监听 ==========
+document.getElementById('poop_count').addEventListener('input', function() {
+    document.getElementById('poop_status_group').style.display = this.value > 0 ? 'block' : 'none';
+});
+document.getElementById('health_status').addEventListener('change', function() {
+    document.getElementById('health_extra_group').style.display = ['生病','外伤','疫苗','其他'].includes(this.value) ? 'block' : 'none';
+});
+
+// ========== 启动 ==========
+window.onload = init;
+</script>
+</body>
+</html>
